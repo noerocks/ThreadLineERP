@@ -1,7 +1,7 @@
-import Signin from "@/components/ui/signin";
+import Signin from "@/components/google-signin";
 
 const Index = () => {
-  return <Signin />;
+  return <></>;
 };
 
 export default Index;
