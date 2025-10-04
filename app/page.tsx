@@ -1,9 +1,7 @@
-const Home = () => {
-  return (
-    <div>
-      <p>Home</p>
-    </div>
-  );
+import Signin from "@/components/ui/signin";
+
+const Index = () => {
+  return <Signin />;
 };
 
-export default Home;
+export default Index;
