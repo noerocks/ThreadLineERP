@@ -11,3 +11,10 @@ export function getInitialsFromName(name: string) {
     .map((n) => n[0].toUpperCase())
     .join("");
 }
+
+export function screamingSnakeToTitle(text: string) {
+  return text
+    .split("_")
+    .map((word) => word[0].toUpperCase() + word.slice(1).toLocaleLowerCase())
+    .join(" ");
+}

@@ -26,28 +26,31 @@ const ShopHeader = () => {
           <ShoppingCart />
         </Button>
         {session && user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar>
-                <AvatarImage src={user.image!} />
-                <AvatarFallback>
-                  {getInitialsFromName(user.name!)}
-                </AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="bottom" align="end" sideOffset={5}>
-              <DropdownMenuItem
-                className="flex items-center"
-                variant="destructive"
-                onClick={() => {
-                  signOut();
-                }}
-              >
-                <Power />
-                Sign out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <>
+            <p>{user.email}</p>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar>
+                  <AvatarImage src={user.image!} />
+                  <AvatarFallback>
+                    {getInitialsFromName(user.name!)}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="bottom" align="end" sideOffset={5}>
+                <DropdownMenuItem
+                  className="flex items-center"
+                  variant="destructive"
+                  onClick={() => {
+                    signOut();
+                  }}
+                >
+                  <Power />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
         ) : (
           <Signin />
         )}

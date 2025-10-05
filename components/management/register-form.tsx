@@ -16,10 +16,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
+import { cn, screamingSnakeToTitle } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import Link from "next/link";
+import { UserRole } from "@prisma/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const RegisterForm = ({
   className,
@@ -30,6 +38,7 @@ const RegisterForm = ({
     defaultValues: {
       email: "",
       name: "",
+      role: undefined,
       birthday: undefined,
       address: "",
       contactNumber: "",
@@ -37,6 +46,9 @@ const RegisterForm = ({
       confirm: "",
     },
   });
+  const roles = Object.values(UserRole).filter(
+    (role) => role !== UserRole.CUSTOMER
+  );
   const handleSubmit = (data: z.infer<typeof registerFormSchema>) => {
     console.log(data);
   };
@@ -58,23 +70,7 @@ const RegisterForm = ({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input {...field} autoComplete="off" />
-              </FormControl>
-              <FormDescription>
-                Please enter your first and last name
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Full Name</FormLabel>
               <FormControl>
                 <Input {...field} autoComplete="off" />
               </FormControl>
@@ -82,6 +78,48 @@ const RegisterForm = ({
             </FormItem>
           )}
         />
+        <div className="flex items-center gap-2">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input {...field} autoComplete="off" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Role</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a Role" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {roles.map((role) => (
+                      <SelectItem value={role} key={role}>
+                        {screamingSnakeToTitle(role)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="birthday"

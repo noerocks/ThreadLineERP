@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ModeToggle } from "@/components/theme-toggle";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +37,23 @@ export default function ManagementLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main>{children}</main>
+          <main className="flex min-h-svh">
+            <ScrollArea className="flex-1 flex flex-col p-5 gap-10 h-screen">
+              <div className="flex items-center justify-between">
+                <p className="font-semibold text-lg">ThreadLine.</p>
+                <ModeToggle />
+              </div>
+              {children}
+            </ScrollArea>
+            <div className="bg-muted relative hidden lg:block flex-1">
+              <Image
+                src="/man-wearing-jacket-near-wall-in-room.jpg"
+                alt="Image"
+                fill
+                className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              />
+            </div>
+          </main>
         </ThemeProvider>
       </body>
     </html>

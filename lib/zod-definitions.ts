@@ -1,10 +1,15 @@
+import { UserRole } from "@prisma/client";
 import z from "zod";
+import { nativeEnum } from "zod/v3";
 
 export const registerFormSchema = z
   .object({
     name: z.string().min(1, "This field is required").trim(),
+    role: z.enum(UserRole, "Please select a role"),
     email: z.email().trim(),
-    birthday: z.date(),
+    birthday: z.date({
+      error: "Please pick a date",
+    }),
     address: z.string().min(1, "This field is required").trim(),
     contactNumber: z.string().min(1, "This field is required").trim(),
     password: z
