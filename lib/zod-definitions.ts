@@ -1,6 +1,5 @@
 import { UserRole } from "@prisma/client";
 import z from "zod";
-import { nativeEnum } from "zod/v3";
 
 export const registerFormSchema = z
   .object({
@@ -26,3 +25,8 @@ export const registerFormSchema = z
     error: "Passwords didn't match",
     path: ["confirm"],
   });
+
+export const loginFormSchema = z.object({
+  email: z.email().trim(),
+  password: z.string().min(1, "This field is required"),
+});
