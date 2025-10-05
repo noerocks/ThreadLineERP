@@ -14,13 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-const CustomerHeader = () => {
+const ShopHeader = () => {
   const { data: session } = useSession();
   const user = session?.user;
   return (
-    <div className="flex items-center justify-between p-5">
-      <p className="text-3xl">ThreadLine.</p>
-      <div className="flex items-center gap-2">
+    <header className="flex items-center justify-between p-5 border">
+      <p className="text-4xl">ThreadLine.</p>
+      <div className="flex items-center gap-5">
         <ModeToggle />
         <Button variant="ghost">
           <ShoppingCart />
@@ -52,8 +52,8 @@ const CustomerHeader = () => {
           <Signin />
         )}
       </div>
-    </div>
+    </header>
   );
 };
 
-export default CustomerHeader;
+export default ShopHeader;

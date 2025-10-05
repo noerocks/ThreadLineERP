@@ -1,0 +1,23 @@
+import z from "zod";
+
+export const registerFormSchema = z
+  .object({
+    name: z.string().min(1, "This field is required").trim(),
+    email: z.email().trim(),
+    birthday: z.date(),
+    address: z.string().min(1, "This field is required").trim(),
+    contactNumber: z.string().min(1, "This field is required").trim(),
+    password: z
+      .string()
+      .min(8, "Minimum 8 characters")
+      .regex(/[A-Z]/, "At least one uppercase character")
+      .regex(/[a-z]/, "At least one lowercase character")
+      .regex(/[0-9]/, "At least one digit")
+      .regex(/[^A-Z0-9a-z]/, "At least one special character")
+      .trim(),
+    confirm: z.string().min(8, "Minimum 8 characters").trim().optional(),
+  })
+  .refine((data) => data.password === data.confirm, {
+    error: "Passwords didn't match",
+    path: ["confirm"],
+  });

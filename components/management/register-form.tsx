@@ -1,0 +1,199 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import z from "zod";
+import { registerFormSchema } from "@/lib/zod-definitions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "../ui/calendar";
+import Link from "next/link";
+
+const RegisterForm = ({
+  className,
+  ...props
+}: React.ComponentProps<"form">) => {
+  const form = useForm<z.infer<typeof registerFormSchema>>({
+    resolver: zodResolver(registerFormSchema),
+    defaultValues: {
+      email: "",
+      name: "",
+      birthday: undefined,
+      address: "",
+      contactNumber: "",
+      password: "",
+      confirm: "",
+    },
+  });
+  const handleSubmit = (data: z.infer<typeof registerFormSchema>) => {
+    console.log(data);
+  };
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className={cn("flex flex-col gap-5", className)}
+        {...props}
+      >
+        <div className="text-center">
+          <h2 className="text-2xl font-bold">Create your Account</h2>
+          <p className="text-muted-foreground text-sm">
+            Fill in the form below to create your account
+          </p>
+        </div>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input {...field} autoComplete="off" />
+              </FormControl>
+              <FormDescription>
+                Please enter your first and last name
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input {...field} autoComplete="off" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="birthday"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date of Birth</FormLabel>
+              <FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        field.value.toLocaleString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      captionLayout="dropdown"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </FormControl>
+              <FormDescription>
+                Your date of birth is used to calculate your age
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Address</FormLabel>
+              <FormControl>
+                <Input {...field} autoComplete="off" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="contactNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contact Number</FormLabel>
+              <FormControl>
+                <Input {...field} autoComplete="off" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex items-center gap-2">
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input {...field} autoComplete="off" type="password" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirm"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input {...field} autoComplete="off" type="password" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Button className="w-full">Create Account</Button>
+        <p className="text-muted-foreground text-sm text-balance text-center">
+          Already have an account?{" "}
+          <Link href={"/login"} className="underline">
+            Sign in
+          </Link>
+        </p>
+      </form>
+    </Form>
+  );
+};
+
+export default RegisterForm;
