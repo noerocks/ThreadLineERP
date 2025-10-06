@@ -17,6 +17,10 @@ import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { useTransition } from "react";
+import { login } from "@/lib/actions/authentication";
+import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 const LoginForm = ({ className, ...props }: React.ComponentProps<"form">) => {
   const form = useForm<z.infer<typeof LoginFormSchema>>({
@@ -26,8 +30,16 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<"form">) => {
       password: "",
     },
   });
+  const [pending, startTransition] = useTransition();
   const onSubmit = (data: z.infer<typeof LoginFormSchema>) => {
-    console.log(data);
+    startTransition(async () => {
+      const result = await login(data);
+      if (result?.success) {
+        toast.success(result.success.message);
+      } else {
+        toast.error(result?.failure.error);
+      }
+    });
   };
   return (
     <Form {...form}>
@@ -70,7 +82,16 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<"form">) => {
             </FormItem>
           )}
         />
-        <Button className="w-full">Sign in</Button>
+        <Button className="w-full">
+          {pending ? (
+            <>
+              <Loader className="animate-spin" />
+              <span>Signing in...</span>
+            </>
+          ) : (
+            "Sign in"
+          )}
+        </Button>
         <p className="text-muted-foreground text-sm text-balance text-center">
           Don't have an account?{" "}
           <Link href={"/register"} className="underline">
