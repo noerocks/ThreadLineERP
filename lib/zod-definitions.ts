@@ -1,7 +1,15 @@
 import { UserRole } from "@prisma/client";
 import z from "zod";
 
-export const registerFormSchema = z
+export const SessionPayload = z.object({
+  id: z.string(),
+  email: z.email(),
+  name: z.string(),
+  role: z.enum(UserRole),
+  expiresAt: z.date(),
+});
+
+export const RegisterFormSchema = z
   .object({
     name: z.string().min(1, "This field is required").trim(),
     role: z.enum(UserRole, "Please select a role"),
@@ -26,7 +34,7 @@ export const registerFormSchema = z
     path: ["confirm"],
   });
 
-export const loginFormSchema = z.object({
+export const LoginFormSchema = z.object({
   email: z.email().trim(),
   password: z.string().min(1, "This field is required"),
 });

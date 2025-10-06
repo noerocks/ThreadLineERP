@@ -11,13 +11,13 @@ import {
   FormMessage,
 } from "../ui/form";
 import z from "zod";
-import { registerFormSchema } from "@/lib/zod-definitions";
+import { RegisterFormSchema } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { cn, screamingSnakeToTitle } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import Link from "next/link";
 import { UserRole } from "@prisma/client";
@@ -28,13 +28,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useTransition } from "react";
+import { register } from "@/lib/actions/authentication";
+import { toast } from "sonner";
 
 const RegisterForm = ({
   className,
   ...props
 }: React.ComponentProps<"form">) => {
-  const form = useForm<z.infer<typeof registerFormSchema>>({
-    resolver: zodResolver(registerFormSchema),
+  const form = useForm<z.infer<typeof RegisterFormSchema>>({
+    resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
       email: "",
       name: "",
@@ -49,8 +52,16 @@ const RegisterForm = ({
   const roles = Object.values(UserRole).filter(
     (role) => role !== UserRole.CUSTOMER
   );
-  const handleSubmit = (data: z.infer<typeof registerFormSchema>) => {
-    console.log(data);
+  const [pending, startTransition] = useTransition();
+  const handleSubmit = (data: z.infer<typeof RegisterFormSchema>) => {
+    startTransition(async () => {
+      const result = await register(data);
+      if (result?.success) {
+        toast.success(result.success.message);
+      } else {
+        toast.error(result?.failure.error);
+      }
+    });
   };
   return (
     <Form {...form}>
@@ -222,7 +233,16 @@ const RegisterForm = ({
             )}
           />
         </div>
-        <Button className="w-full">Create Account</Button>
+        <Button className="w-full" disabled={pending}>
+          {pending ? (
+            <>
+              <Loader className="animate-spin" />
+              <span>Creating your account...</span>
+            </>
+          ) : (
+            "Create Account"
+          )}
+        </Button>
         <p className="text-muted-foreground text-sm text-balance text-center">
           Already have an account?{" "}
           <Link href={"/login"} className="underline">

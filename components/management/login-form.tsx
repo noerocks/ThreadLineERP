@@ -1,6 +1,6 @@
 "use client";
 
-import { loginFormSchema } from "@/lib/zod-definitions";
+import { LoginFormSchema } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -19,14 +19,14 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 
 const LoginForm = ({ className, ...props }: React.ComponentProps<"form">) => {
-  const form = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
+  const form = useForm<z.infer<typeof LoginFormSchema>>({
+    resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
-  const onSubmit = (data: z.infer<typeof loginFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof LoginFormSchema>) => {
     console.log(data);
   };
   return (

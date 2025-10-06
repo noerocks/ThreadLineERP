@@ -27,7 +27,7 @@ const ShopHeader = () => {
         </Button>
         {session && user ? (
           <>
-            <p>{user.email}</p>
+            <p className="text-muted-foreground">{user.email}</p>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar>
