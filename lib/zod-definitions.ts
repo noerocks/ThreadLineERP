@@ -38,3 +38,11 @@ export const LoginFormSchema = z.object({
   email: z.email().trim(),
   password: z.string().min(1, "This field is required"),
 });
+
+export const AddSupplierFormSchema = z.object({
+  name: z.string().min(1, "This field is required"),
+  contactName: z.string().min(1, "This field is required"),
+  email: z.email(),
+  phone: z.string().min(1, "This field is required"),
+  address: z.string().min(1, "This field is required"),
+});

@@ -8,33 +8,47 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Package } from "lucide-react";
+import { link } from "fs";
+import { FileText, Package, Truck } from "lucide-react";
 import Link from "next/link";
 
 const SidebarNavigation = () => {
-  const navigation = [
-    { label: "Inventory", link: "dashboard/inventory", icon: <Package /> },
+  const navGroup = [
+    {
+      label: "Inventory",
+      items: [
+        { label: "Products", link: "/dashboard/products", icon: <Package /> },
+        { label: "Suppliers", link: "/dashboard/suppliers", icon: <Truck /> },
+        {
+          label: "Purchase Order",
+          link: "/dashboard/purchaseOrders",
+          icon: <FileText />,
+        },
+      ],
+    },
   ];
   return (
-    <SidebarGroup>
-      <SidebarMenu>
-        <SidebarGroupLabel>Core Modules</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {navigation.map((nav) => (
-              <SidebarMenuItem key={nav.link}>
-                <SidebarMenuButton asChild>
-                  <Link href={nav.link}>
-                    {nav.icon}
-                    {nav.label}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarMenu>
-    </SidebarGroup>
+    <>
+      {navGroup.map((group) => (
+        <SidebarGroup key={group.label}>
+          <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {group.items.map((item) => (
+                <SidebarMenuItem key={item.link}>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.link}>
+                      {item.icon}
+                      {item.label}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      ))}
+    </>
   );
 };
 

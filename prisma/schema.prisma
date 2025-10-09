@@ -20,6 +20,34 @@ enum UserRole {
   CUSTOMER
 }
 
+enum Category {
+  TOPS
+  BOTTOMS
+  OUTERWEAR
+  FOOTWEAR
+  ACCESSORIES
+}
+
+enum Gender {
+  MEN
+  WOMEN
+  KIDS
+  UNISEX
+}
+
+enum ProductStatus {
+  ACTIVE
+  DISCONTINUED
+  OUT_OF_STOCK
+}
+
+enum PurchaseOrderStatus {
+  PENDING
+  IN_TRANSIT
+  ARRIVED
+  CANCELLED
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -74,4 +102,60 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model Product {
+  id                 String              @id @default(cuid())
+  status             ProductStatus
+  name               String
+  description        String?
+  size               String?
+  color              String?
+  cost               Decimal             @default(0) @db.Decimal(10, 2)
+  price              Decimal             @default(0) @db.Decimal(10, 2)
+  vatAmount          Decimal             @default(0) @db.Decimal(10, 2)
+  sku                String              @unique
+  stock              Int                 @default(0)
+  category           Category
+  gender             Gender
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  purchaseOrderItems PurchaseOrderItem[]
+}
+
+model Supplier {
+  id             String          @id @default(cuid())
+  name           String
+  contactName    String?
+  email          String?
+  phone          String?
+  address        String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  purchaseOrders PurchaseOrder[]
+}
+
+model PurchaseOrder {
+  id          String              @id @default(cuid())
+  supplier    Supplier            @relation(fields: [supplierId], references: [id])
+  supplierId  String
+  status      PurchaseOrderStatus
+  totalAmount Decimal             @db.Decimal(10, 2)
+  items       PurchaseOrderItem[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model PurchaseOrderItem {
+  id        String        @id @default(cuid())
+  order     PurchaseOrder @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product       @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+  unitPrice Decimal       @db.Decimal(10, 2)
+  vatAmount Decimal       @db.Decimal(10, 2)
+  lineTotal Decimal       @db.Decimal(10, 2)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }

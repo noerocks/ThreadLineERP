@@ -2,13 +2,14 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Plus } from "lucide-react";
 
-const AddProductForm = () => {
+const AddProductSheet = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -20,10 +21,11 @@ const AddProductForm = () => {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Add New Product</SheetTitle>
+          <SheetDescription>Provide the product details below</SheetDescription>
         </SheetHeader>
       </SheetContent>
     </Sheet>
   );
 };
 
-export default AddProductForm;
+export default AddProductSheet;
