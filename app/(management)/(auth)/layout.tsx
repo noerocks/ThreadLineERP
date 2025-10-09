@@ -1,6 +1,5 @@
 "use client";
 
-import { ModeToggle } from "@/components/theme-toggle";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
