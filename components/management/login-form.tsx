@@ -34,9 +34,7 @@ const LoginForm = ({ className, ...props }: React.ComponentProps<"form">) => {
   const onSubmit = (data: z.infer<typeof LoginFormSchema>) => {
     startTransition(async () => {
       const result = await login(data);
-      if (result?.success) {
-        toast.success(result.success.message);
-      } else {
+      if (result?.failure) {
         toast.error(result?.failure.error);
       }
     });

@@ -5,7 +5,8 @@ import { LoginFormSchema, RegisterFormSchema } from "../zod-definitions";
 import { createNewUser, findUserByEmail } from "../DAL/user";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import bcrypt from "bcrypt";
-import { createSession } from "./session";
+import { createSession, deleteSession } from "./session";
+import { redirect } from "next/navigation";
 
 export async function register(data: z.infer<typeof RegisterFormSchema>) {
   const result = RegisterFormSchema.safeParse(data);
@@ -55,31 +56,30 @@ export async function login(data: z.infer<typeof LoginFormSchema>) {
     return { failure: { error: "Invalid form data" } };
   }
   const { email, password } = data;
-  try {
-    const user = await findUserByEmail(email);
-    if (!user)
-      return { failure: { error: "No account found with this email address" } };
-    if (!user.hashedPassword) {
-      return {
-        failure: {
-          error:
-            "This account was created with different method. This could me a customer's account.",
-        },
-      };
-    }
-    const passwordsMatch = await bcrypt.compare(password, user.hashedPassword);
-    if (!passwordsMatch)
-      return {
-        failure: { error: "Incorrect password" },
-      };
-    await createSession({
-      id: user.id,
-      email: user.email!,
-      name: user.name!,
-      role: user.role,
-    });
-    return { success: { message: "Logged in successfuly" } };
-  } catch (error) {
-    console.log("Something went wrong");
+  const user = await findUserByEmail(email);
+  if (!user)
+    return { failure: { error: "No account found with this email address" } };
+  if (!user.hashedPassword) {
+    return {
+      failure: {
+        error:
+          "This account was created with different method. This could me a customer's account.",
+      },
+    };
   }
+  const passwordsMatch = await bcrypt.compare(password, user.hashedPassword);
+  if (!passwordsMatch)
+    return {
+      failure: { error: "Incorrect password" },
+    };
+  await createSession({
+    id: user.id,
+    email: user.email!,
+    name: user.name!,
+    role: user.role,
+  });
+  redirect("/dashboard");
+}
+export async function logout() {
+  await deleteSession();
 }
