@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { Category, Gender, UserRole } from "@prisma/client";
 import z from "zod";
 
 export const SessionPayload = z.object({
@@ -45,4 +45,13 @@ export const AddSupplierFormSchema = z.object({
   email: z.email(),
   phone: z.string().min(1, "This field is required"),
   address: z.string().min(1, "This field is required"),
+});
+
+export const AddProductFormSchema = z.object({
+  name: z.string().min(1, "This field is required"),
+  description: z.string().min(1, "This field is required"),
+  size: z.string().min(1, "This field is required"),
+  color: z.string().min(1, "This field is required"),
+  category: z.enum(Category, "Please pick a category"),
+  gender: z.enum(Gender, "Please pick a gender"),
 });

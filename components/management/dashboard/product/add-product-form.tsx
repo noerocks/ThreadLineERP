@@ -12,6 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Sheet,
   SheetClose,
   SheetContent,
@@ -21,10 +28,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { AddNewSupplier } from "@/lib/actions/supplier";
-import { cn } from "@/lib/utils";
-import { AddSupplierFormSchema } from "@/lib/zod-definitions";
+import { addNewProduct } from "@/lib/actions/product";
+import { cn, screamingSnakeToTitle } from "@/lib/utils";
+import { AddProductFormSchema } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Category, Gender } from "@prisma/client";
 import { Loader, Plus } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -35,21 +43,22 @@ const AddSupplierForm = ({
   className,
   ...props
 }: React.ComponentProps<"form">) => {
-  const form = useForm<z.infer<typeof AddSupplierFormSchema>>({
-    resolver: zodResolver(AddSupplierFormSchema),
+  const form = useForm<z.infer<typeof AddProductFormSchema>>({
+    resolver: zodResolver(AddProductFormSchema),
     defaultValues: {
       name: "",
-      contactName: "",
-      email: "",
-      phone: "",
-      address: "",
+      description: "",
+      size: "",
+      color: "",
+      category: undefined,
+      gender: undefined,
     },
   });
   const [pending, startTransition] = useTransition();
   const [open, setOpen] = useState<boolean>(false);
-  const onSubmit = async (data: z.infer<typeof AddSupplierFormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof AddProductFormSchema>) => {
     startTransition(async () => {
-      const result = await AddNewSupplier(data);
+      const result = await addNewProduct(data);
       if (result.failure) {
         toast.error(result.failure.error);
       } else {
@@ -64,13 +73,13 @@ const AddSupplierForm = ({
       <SheetTrigger asChild>
         <Button className="flex items-center gap-2">
           <Plus />
-          Add New Supplier
+          Add New Product
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader>
-          <SheetTitle>Add New Supplier</SheetTitle>
-          <SheetDescription>Provide Supplier Details Below</SheetDescription>
+          <SheetTitle>Add New Product</SheetTitle>
+          <SheetDescription>Provide Product Details Below</SheetDescription>
         </SheetHeader>
         <ScrollArea className="flex-1 min-h-0">
           <Form {...form}>
@@ -80,7 +89,7 @@ const AddSupplierForm = ({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Supplier Name</FormLabel>
+                    <FormLabel>Product Name</FormLabel>
                     <FormControl>
                       <Input {...field} autoComplete="off" />
                     </FormControl>
@@ -90,10 +99,10 @@ const AddSupplierForm = ({
               />
               <FormField
                 control={form.control}
-                name="contactName"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Contact Name</FormLabel>
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Input {...field} autoComplete="off" />
                     </FormControl>
@@ -103,10 +112,10 @@ const AddSupplierForm = ({
               />
               <FormField
                 control={form.control}
-                name="email"
+                name="size"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Size</FormLabel>
                     <FormControl>
                       <Input {...field} autoComplete="off" />
                     </FormControl>
@@ -116,10 +125,10 @@ const AddSupplierForm = ({
               />
               <FormField
                 control={form.control}
-                name="phone"
+                name="color"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
+                    <FormLabel>Color</FormLabel>
                     <FormControl>
                       <Input {...field} autoComplete="off" />
                     </FormControl>
@@ -129,12 +138,53 @@ const AddSupplierForm = ({
               />
               <FormField
                 control={form.control}
-                name="address"
+                name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    <FormLabel>Category</FormLabel>
                     <FormControl>
-                      <Input {...field} autoComplete="off" />
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Please select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.values(Category).map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {screamingSnakeToTitle(category)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gender</FormLabel>
+                    <FormControl>
+                      <Select
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Please select a gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.values(Gender).map((gender) => (
+                            <SelectItem key={gender} value={gender}>
+                              {screamingSnakeToTitle(gender)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
