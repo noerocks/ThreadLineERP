@@ -14,7 +14,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
@@ -22,8 +21,9 @@ import { logout } from "@/lib/actions/authentication";
 import { getInitialsFromName, screamingSnakeToTitle } from "@/lib/utils";
 import { SessionPayload } from "@/lib/zod-definitions";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
-import { ChevronsUpDown, Power, ShoppingBag } from "lucide-react";
+import { ChevronsUpDown, Package, Power, ShoppingBag } from "lucide-react";
 import z from "zod";
+import SidebarNavigation from "./sidebar-nav";
 
 const DashboardSidebar = ({
   user,
@@ -37,12 +37,14 @@ const DashboardSidebar = ({
           <SidebarMenuItem>
             <SidebarMenuButton className="flex items-center hover:bg-transparent">
               <ShoppingBag />
-              <p className="text-xl text-muted-foreground">ThreadLine.</p>
+              <p className="text-xl">ThreadLine.</p>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent></SidebarContent>
+      <SidebarContent>
+        <SidebarNavigation />
+      </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
