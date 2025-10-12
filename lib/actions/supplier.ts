@@ -4,6 +4,7 @@ import z from "zod";
 import { AddSupplierFormSchema } from "../zod-definitions";
 import { verifySession } from "../actions/session";
 import { createNewSupplier } from "../DAL/supplier";
+import { revalidateTag } from "next/cache";
 
 export async function AddNewSupplier(
   data: z.infer<typeof AddSupplierFormSchema>
@@ -14,6 +15,7 @@ export async function AddNewSupplier(
   if (!session) return { failure: { error: "Unauthenticated" } };
   try {
     const supplier = await createNewSupplier(data);
+    revalidateTag("suppliers");
     return { success: { message: "Supplier created successfuly" } };
   } catch (error) {
     const e = error as Error;
