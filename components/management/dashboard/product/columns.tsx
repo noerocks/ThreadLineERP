@@ -60,27 +60,14 @@ export const columns: ColumnDef<ProductsDTO>[] = [
     header: "Color",
   },
   {
-    accessorKey: "price",
-    header: () => <div>Price</div>,
+    accessorKey: "cost",
+    header: () => <div>Cost</div>,
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price"));
+      const cost = parseFloat(row.getValue("cost"));
       const formatted = new Intl.NumberFormat("en-PH", {
         style: "currency",
         currency: "PHP",
-      }).format(price);
-
-      return <div>{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "vatAmount",
-    header: () => <div>Vat Amount</div>,
-    cell: ({ row }) => {
-      const vatAmount = parseFloat(row.getValue("vatAmount"));
-      const formatted = new Intl.NumberFormat("en-PH", {
-        style: "currency",
-        currency: "PHP",
-      }).format(vatAmount);
+      }).format(cost);
 
       return <div>{formatted}</div>;
     },

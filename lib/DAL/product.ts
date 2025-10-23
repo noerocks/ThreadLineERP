@@ -17,6 +17,7 @@ export async function createNewProduct(
       description: data.description,
       size: data.size,
       color: data.color,
+      cost: Number(data.cost),
     },
   });
   return product;
@@ -26,6 +27,7 @@ export const getProducts = unstable_cache(
   async (): Promise<ProductsDTO[] | []> => {
     const products = await prisma.product.findMany();
     return products.map((product) => ({
+      id: product.id,
       name: product.name,
       description: product.description,
       size: product.size,

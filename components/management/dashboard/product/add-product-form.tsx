@@ -52,6 +52,7 @@ const AddSupplierForm = ({
       color: "",
       category: undefined,
       gender: undefined,
+      cost: "0",
     },
   });
   const [pending, startTransition] = useTransition();
@@ -186,6 +187,20 @@ const AddSupplierForm = ({
                         </SelectContent>
                       </Select>
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="cost"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cost</FormLabel>
+                    <FormControl>
+                      <Input {...field} autoComplete="off" type="number" />
+                    </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}

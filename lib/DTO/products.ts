@@ -1,6 +1,7 @@
 import { Category } from "@prisma/client";
 
 export type ProductsDTO = {
+  id: string;
   name: string;
   description: string | null;
   size: string | null;

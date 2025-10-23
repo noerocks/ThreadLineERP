@@ -11,8 +11,10 @@ import {
 import { link } from "fs";
 import { FileText, Package, Truck } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const SidebarNavigation = () => {
+  const pathName = usePathname();
   const navGroup = [
     {
       label: "Inventory",
@@ -21,7 +23,7 @@ const SidebarNavigation = () => {
         { label: "Suppliers", link: "/dashboard/suppliers", icon: <Truck /> },
         {
           label: "Purchase Order",
-          link: "/dashboard/purchaseOrders",
+          link: "/dashboard/purchase-orders",
           icon: <FileText />,
         },
       ],
@@ -36,7 +38,10 @@ const SidebarNavigation = () => {
             <SidebarMenu>
               {group.items.map((item) => (
                 <SidebarMenuItem key={item.link}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathName.includes(item.link)}
+                  >
                     <Link href={item.link}>
                       {item.icon}
                       {item.label}

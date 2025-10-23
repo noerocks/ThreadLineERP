@@ -54,4 +54,5 @@ export const AddProductFormSchema = z.object({
   color: z.string().min(1, "This field is required"),
   category: z.enum(Category, "Please pick a category"),
   gender: z.enum(Gender, "Please pick a gender"),
+  cost: z.string(),
 });
