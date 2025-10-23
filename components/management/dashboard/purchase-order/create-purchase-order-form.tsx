@@ -18,12 +18,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SheetFooter } from "@/components/ui/sheet";
+import { createPurchaseOrder } from "@/lib/actions/purchase-order";
 import { ProductsDTO } from "@/lib/DTO/products";
 import { SuppliersDTO } from "@/lib/DTO/suppliers";
 import { CreatePurchaseOrderSchehma } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, X } from "lucide-react";
+import { Check, Loader, X } from "lucide-react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 type CreatePurchaseOrderFormProps = {
@@ -48,8 +51,26 @@ const CreatePurchaseOrderForm = ({
     (sum, item) => (sum += item.product.cost * Number(item.quantity)),
     0
   );
-  const handleSubmit = (data: z.infer<typeof CreatePurchaseOrderSchehma>) => {
-    console.log(data);
+  const [pending, startTransition] = useTransition();
+  const handleSubmit = async (
+    data: z.infer<typeof CreatePurchaseOrderSchehma>
+  ) => {
+    startTransition(async () => {
+      const result = await createPurchaseOrder(
+        data.supplier,
+        data.address,
+        cart
+      );
+      resetCart([]);
+      if (result.failure) {
+        toast.error(result.failure.error);
+        return;
+      }
+      if (result.success) {
+        toast.success(result.success.message);
+        return;
+      }
+    });
   };
   return (
     <Form {...form}>
@@ -151,8 +172,17 @@ const CreatePurchaseOrderForm = ({
             </p>
           </div>
           <Button type="submit">
-            <Check />
-            Generate Purchase Order
+            {pending ? (
+              <>
+                <Loader className="animate-spin" />
+                Generating Purchase Order...
+              </>
+            ) : (
+              <>
+                <Check />
+                Generate Purchase Order
+              </>
+            )}
           </Button>
           <Button type="reset" variant="outline" onClick={() => resetCart([])}>
             Reset Cart

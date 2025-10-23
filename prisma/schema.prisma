@@ -135,15 +135,14 @@ model Supplier {
 }
 
 model PurchaseOrder {
-  id          String              @id @default(cuid())
-  supplier    Supplier            @relation(fields: [supplierId], references: [id])
-  supplierId  String
-  status      PurchaseOrderStatus
-  totalAmount Decimal             @db.Decimal(10, 2)
-  address     String
-  items       PurchaseOrderItem[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  id         String              @id @default(cuid())
+  supplier   Supplier            @relation(fields: [supplierId], references: [id])
+  supplierId String
+  status     PurchaseOrderStatus
+  address    String
+  items      PurchaseOrderItem[]
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
 }
 
 model PurchaseOrderItem {
