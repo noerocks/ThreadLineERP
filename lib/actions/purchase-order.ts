@@ -4,6 +4,7 @@ import { ProductsDTO } from "../DTO/products";
 import { verifySession } from "./session";
 import { createPurchaseOrder as createPurchaseOrderDAL } from "../DAL/purchase-order";
 import { createManyPurchaseOrderItems } from "../DAL/purchase-item";
+import { revalidateTag } from "next/cache";
 
 export async function createPurchaseOrder(
   supplierId: string,
@@ -33,6 +34,7 @@ export async function createPurchaseOrder(
     const purchaseItems = await createManyPurchaseOrderItems(cartItems);
     if (!purchaseItems)
       return { failure: { error: "Error in creating purchase order items" } };
+    revalidateTag("purchaseOrders");
     return { success: { message: "Purchase order is created successfully" } };
   } catch (error) {
     const e = error as Error;
