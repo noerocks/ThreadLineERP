@@ -140,6 +140,7 @@ model PurchaseOrder {
   supplierId  String
   status      PurchaseOrderStatus
   totalAmount Decimal             @db.Decimal(10, 2)
+  address     String
   items       PurchaseOrderItem[]
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt

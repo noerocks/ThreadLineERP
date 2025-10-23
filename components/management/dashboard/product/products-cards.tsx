@@ -11,17 +11,26 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ProductsDTO } from "@/lib/DTO/products";
+import { SuppliersDTO } from "@/lib/DTO/suppliers";
 import { Package, Plus, ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import CreatePurchaseOrderForm from "../purchase-order/create-purchase-order-form";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
 
-type PurchaseItem = {
+type CartItem = {
   product: ProductsDTO;
   quantity: string;
 };
 
-const ProductsCards = ({ products }: { products: ProductsDTO[] }) => {
-  const [cart, setCart] = useState<PurchaseItem[]>([]);
-  console.log(cart);
+const ProductsCards = ({
+  products,
+  suppliers,
+}: {
+  products: ProductsDTO[];
+  suppliers: SuppliersDTO[];
+}) => {
+  const [cart, setCart] = useState<CartItem[]>([]);
   const handleAddToCart = (e: React.MouseEvent<HTMLDivElement>) => {
     const button =
       ((e.target as HTMLElement).closest(
@@ -32,10 +41,12 @@ const ProductsCards = ({ products }: { products: ProductsDTO[] }) => {
     const card = button.closest("[data-card]");
     const input = card?.querySelector("input");
     const quantity = input ? input.value : 0;
+    if (Number(quantity) <= 0) return;
     if (input) input.value = "0";
     const product = products.find((p) => p.id === productId);
     if (!product || !quantity) return;
     setCart((prevItems) => [...prevItems, { product, quantity }]);
+    toast.success("Item added to cart");
   };
   return (
     <div className="flex flex-col gap-5 mt-5">
@@ -52,16 +63,23 @@ const ProductsCards = ({ products }: { products: ProductsDTO[] }) => {
               )}
             </div>
           </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Create Purchase Order</SheetTitle>
-            </SheetHeader>
-            {cart.length > 0 &&
-              cart.map((item) => (
-                <div key={item.product.id}>
-                  <p>{`${item.product.name} ${item.quantity}`}</p>
-                </div>
-              ))}
+          <SheetContent className="h-screen py-5">
+            <ScrollArea className="h-full">
+              <SheetHeader>
+                <SheetTitle>Create Purchase Order</SheetTitle>
+              </SheetHeader>
+              {cart.length > 0 ? (
+                <CreatePurchaseOrderForm
+                  suppliers={suppliers}
+                  cart={cart}
+                  resetCart={setCart}
+                />
+              ) : (
+                <p className="text-sm text-muted-foreground text-center mt-10">
+                  Cart is empty.
+                </p>
+              )}
+            </ScrollArea>
           </SheetContent>
         </Sheet>
       </div>

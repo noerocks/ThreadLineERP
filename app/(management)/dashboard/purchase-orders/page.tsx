@@ -1,10 +1,12 @@
 import ProductsCards from "@/components/management/dashboard/product/products-cards";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getProducts } from "@/lib/DAL/product";
-import { FileText, ShoppingCart } from "lucide-react";
+import { getSuppliers } from "@/lib/DAL/supplier";
+import { FileText } from "lucide-react";
 
 const PurchaseOrderPage = async () => {
   const products = await getProducts();
+  const suppliers = await getSuppliers();
   return (
     <div className="py-10 px-40 flex flex-col gap-5">
       <div className="flex items-center justify-between">
@@ -19,7 +21,7 @@ const PurchaseOrderPage = async () => {
           <TabsTrigger value="create">Create Purchase Order</TabsTrigger>
         </TabsList>
         <TabsContent value="create">
-          <ProductsCards products={products} />
+          <ProductsCards products={products} suppliers={suppliers} />
         </TabsContent>
       </Tabs>
     </div>

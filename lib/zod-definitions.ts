@@ -56,3 +56,8 @@ export const AddProductFormSchema = z.object({
   gender: z.enum(Gender, "Please pick a gender"),
   cost: z.string(),
 });
+
+export const CreatePurchaseOrderSchehma = z.object({
+  supplier: z.string().min(1, "This field is required"),
+  address: z.string().min(1, "This field is required"),
+});

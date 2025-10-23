@@ -17,6 +17,7 @@ export const getSuppliers = unstable_cache(
   async (): Promise<SuppliersDTO[] | []> => {
     const suppliers = await prisma.supplier.findMany();
     return suppliers.map((supplier) => ({
+      id: supplier.id,
       name: supplier.name,
       contactName: supplier.contactName,
       email: supplier.email,
