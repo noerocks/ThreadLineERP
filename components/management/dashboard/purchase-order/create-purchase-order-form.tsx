@@ -19,10 +19,10 @@ import {
 } from "@/components/ui/select";
 import { SheetFooter } from "@/components/ui/sheet";
 import { createPurchaseOrder } from "@/lib/actions/purchase-order";
-import { ProductsDTO } from "@/lib/DTO/products";
 import { SuppliersDTO } from "@/lib/DTO/suppliers";
 import { CreatePurchaseOrderSchehma } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Color, Product, ShirtSize } from "@prisma/client";
 import { Check, Loader, X } from "lucide-react";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -30,7 +30,12 @@ import { toast } from "sonner";
 import z from "zod";
 
 type CreatePurchaseOrderFormProps = {
-  cart: { product: ProductsDTO; quantity: string }[];
+  cart: {
+    product: Product;
+    quantity: string;
+    size: string;
+    color: string;
+  }[];
   suppliers: SuppliersDTO[];
   resetCart: (value: []) => void;
 };
@@ -147,8 +152,8 @@ const CreatePurchaseOrderForm = ({
                       <p>{item.quantity}</p>
                     </div>
                     <div className="text-xs text-muted-foreground flex items-center gap-2">
-                      <p>{`Size: ${item.product.size}`}</p>
-                      <p>{`Color: ${item.product.color}`}</p>
+                      <p>{`Size: ${item.size}`}</p>
+                      <p>{`Color: ${item.color}`}</p>
                     </div>
                   </div>
                   <p className="text-sm">

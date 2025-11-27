@@ -15,10 +15,10 @@ import {
 import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { ProductsDTO } from "@/lib/DTO/products";
 import { screamingSnakeToTitle } from "@/lib/utils";
+import { Product } from "@prisma/client";
 
-export const columns: ColumnDef<ProductsDTO>[] = [
+export const columns: ColumnDef<Product>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -52,14 +52,6 @@ export const columns: ColumnDef<ProductsDTO>[] = [
     header: "Description",
   },
   {
-    accessorKey: "size",
-    header: "Size",
-  },
-  {
-    accessorKey: "color",
-    header: "Color",
-  },
-  {
     accessorKey: "cost",
     header: () => <div>Cost</div>,
     cell: ({ row }) => {
@@ -71,10 +63,6 @@ export const columns: ColumnDef<ProductsDTO>[] = [
 
       return <div>{formatted}</div>;
     },
-  },
-  {
-    accessorKey: "stock",
-    header: "Stock",
   },
   {
     accessorKey: "category",

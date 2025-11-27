@@ -50,8 +50,6 @@ export const AddSupplierFormSchema = z.object({
 export const AddProductFormSchema = z.object({
   name: z.string().min(1, "This field is required"),
   description: z.string().min(1, "This field is required"),
-  size: z.string().min(1, "This field is required"),
-  color: z.string().min(1, "This field is required"),
   category: z.enum(Category, "Please pick a category"),
   gender: z.enum(Gender, "Please pick a gender"),
   cost: z.string(),

@@ -48,6 +48,29 @@ enum PurchaseOrderStatus {
   CANCELLED
 }
 
+enum ShirtSize {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+  XXXL
+}
+
+enum Color {
+  RED
+  BLUE
+  GREEN
+  YELLOW
+  BLACK
+  WHITE
+  GRAY
+  ORANGE
+  PURPLE
+  BROWN
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -109,12 +132,9 @@ model Product {
   status             ProductStatus
   name               String
   description        String?
-  size               String?
-  color              String?
   cost               Float               @default(0)
   price              Float               @default(0)
   vatAmount          Float               @default(0)
-  stock              Int                 @default(0)
   category           Category
   gender             Gender
   createdAt          DateTime            @default(now())
@@ -136,7 +156,7 @@ model Supplier {
 
 model PurchaseOrder {
   id         String              @id @default(cuid())
-  supplier   Supplier            @relation(fields: [supplierId], references: [id])
+  supplier   Supplier            @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   supplierId String
   status     PurchaseOrderStatus
   address    String
@@ -147,10 +167,13 @@ model PurchaseOrder {
 
 model PurchaseOrderItem {
   id        String        @id @default(cuid())
-  order     PurchaseOrder @relation(fields: [orderId], references: [id])
+  order     PurchaseOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId   String
-  product   Product       @relation(fields: [productId], references: [id])
+  product   Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
+  size      ShirtSize?
+  shoeSize  Float?
+  color     Color
   quantity  Int
   unitPrice Float
   vatAmount Float

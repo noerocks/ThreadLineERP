@@ -1,6 +1,7 @@
 import ProductsCards from "@/components/management/dashboard/product/products-cards";
 import { columns } from "@/components/management/dashboard/purchase-order/columns";
 import { DataTable } from "@/components/management/dashboard/purchase-order/data-table";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getProducts } from "@/lib/DAL/product";
 import { getAllPurchaseOrders } from "@/lib/DAL/purchase-order";
@@ -22,7 +23,10 @@ const PurchaseOrderPage = async () => {
       </div>
       <Tabs defaultValue="create">
         <TabsList className="bg-background border">
-          <TabsTrigger value="po">Purchase Orders</TabsTrigger>
+          <TabsTrigger value="po">
+            Purchase Orders
+            <Badge variant="destructive">{purchaseOrders.length}</Badge>
+          </TabsTrigger>
           <TabsTrigger value="create">Create Purchase Order</TabsTrigger>
         </TabsList>
         <TabsContent value="po">

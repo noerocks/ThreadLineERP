@@ -215,10 +215,14 @@ const PurchaseOrderDocument = ({
                   {item.product.description && `\n${item.product.description}`}
                 </Text>
                 <Text style={[styles.tableCell, styles.col2]}>
-                  {item.product.size || "N/A"}
+                  {item.shoeSize
+                    ? item.shoeSize
+                    : item.size
+                    ? item.size
+                    : "N/A"}
                 </Text>
                 <Text style={[styles.tableCell, styles.col3]}>
-                  {item.product.color || "N/A"}
+                  {item.color || "N/A"}
                 </Text>
                 <Text style={[styles.tableCell, styles.col2]}>
                   {item.quantity}

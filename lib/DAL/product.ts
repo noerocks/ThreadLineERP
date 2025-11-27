@@ -14,8 +14,6 @@ export async function createNewProduct(
       gender: data.gender,
       status: ProductStatus.OUT_OF_STOCK,
       description: data.description,
-      size: data.size,
-      color: data.color,
       cost: Number(data.cost),
     },
   });

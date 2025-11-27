@@ -17,7 +17,7 @@ const AuthenticationLayout = ({ children }: { children: React.ReactNode }) => {
           }
           alt="Image"
           fill
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.5] dark:grayscale"
+          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.5]"
         />
       </div>
     </div>
