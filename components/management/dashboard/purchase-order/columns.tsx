@@ -12,8 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, MoreHorizontal } from "lucide-react";
+import { CheckCircle2, Eye, MoreHorizontal, Timer, Truck } from "lucide-react";
 import { PurchaseOrderDTO } from "@/lib/DTO/purchase-orders";
+import { screamingSnakeToTitle } from "@/lib/utils";
+import ActionsCell from "./actions-cell";
 
 export const columns: ColumnDef<PurchaseOrderDTO>[] = [
   {
@@ -49,6 +51,31 @@ export const columns: ColumnDef<PurchaseOrderDTO>[] = [
     cell: ({ row }) => {
       const po = row.original;
       return <div>{new Date(po.createdAt).toLocaleDateString("en-US")}</div>;
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const po = row.original;
+      let icon;
+      switch (po.status) {
+        case "PENDING":
+          icon = <Timer size={15} className="text-muted-foreground" />;
+          break;
+        case "ARRIVED":
+          icon = <CheckCircle2 size={15} className="text-muted-foreground" />;
+          break;
+        case "IN_TRANSIT":
+          icon = <Truck size={15} className="text-muted-foreground" />;
+          break;
+      }
+      return (
+        <div className="flex items-center gap-1">
+          {icon}
+          <p>{screamingSnakeToTitle(po.status)}</p>
+        </div>
+      );
     },
   },
   {
@@ -95,24 +122,7 @@ export const columns: ColumnDef<PurchaseOrderDTO>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const po = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem data-id={po.id} data-action="view">
-              <Eye />
-              View
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <ActionsCell po={po} />;
     },
   },
 ];

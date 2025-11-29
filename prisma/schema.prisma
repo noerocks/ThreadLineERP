@@ -18,6 +18,7 @@ enum UserRole {
   STAFF
   CASHIER
   CUSTOMER
+  SUPPLIER
 }
 
 enum Category {
@@ -46,6 +47,12 @@ enum PurchaseOrderStatus {
   IN_TRANSIT
   ARRIVED
   CANCELLED
+}
+
+enum PurchaseOrderItemStatus {
+  PENDING
+  IN_STOCK
+  OUT_OF_STOCK
 }
 
 enum ShirtSize {
@@ -166,10 +173,11 @@ model PurchaseOrder {
 }
 
 model PurchaseOrderItem {
-  id        String        @id @default(cuid())
-  order     PurchaseOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id        String                  @id @default(cuid())
+  status    PurchaseOrderItemStatus @default(PENDING)
+  order     PurchaseOrder           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId   String
-  product   Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
   size      ShirtSize?
   shoeSize  Float?
@@ -178,6 +186,6 @@ model PurchaseOrderItem {
   unitPrice Float
   vatAmount Float
   lineTotal Float
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
 }

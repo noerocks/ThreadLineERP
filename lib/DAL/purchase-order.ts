@@ -1,4 +1,4 @@
-import { PurchaseOrderStatus } from "@prisma/client";
+import { PurchaseOrder, PurchaseOrderStatus } from "@prisma/client";
 import { prisma } from "../prisma";
 import { unstable_cache } from "next/cache";
 
@@ -17,9 +17,42 @@ export async function createPurchaseOrder(supplierId: string, address: string) {
   return purchaseOrder;
 }
 
+export async function updatePurchaseOrderById(data: Partial<PurchaseOrder>) {
+  const purchaseOrder = await prisma.purchaseOrder.update({
+    where: {
+      id: data.id,
+    },
+    data,
+  });
+  return purchaseOrder;
+}
+
 export const getAllPurchaseOrders = unstable_cache(
   async () => {
     const purchaseOrders = await prisma.purchaseOrder.findMany({
+      include: {
+        supplier: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+    return purchaseOrders;
+  },
+  ["getAllPurchaseOrders"],
+  {
+    tags: ["purchaseOrders"],
+  }
+);
+
+export const getAllPurchaseOrdersBySupplierId = unstable_cache(
+  async (supplierId: string) => {
+    const purchaseOrders = await prisma.purchaseOrder.findMany({
+      where: {
+        supplierId,
+      },
       include: {
         supplier: true,
         items: {

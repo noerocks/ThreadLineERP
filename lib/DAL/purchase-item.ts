@@ -19,3 +19,16 @@ export async function createManyPurchaseOrderItems(
   });
   return purchaseOrderItems;
 }
+
+export async function updatePurchaseItemByPurchaseOrder(
+  orderId: string,
+  data: Partial<PurchaseOrderItem>
+) {
+  const purchaseOrderItem = await prisma.purchaseOrderItem.updateMany({
+    where: {
+      orderId,
+    },
+    data,
+  });
+  return purchaseOrderItem;
+}

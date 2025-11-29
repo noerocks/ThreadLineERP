@@ -12,13 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { Eye, MoreHorizontal, Pencil, Trash } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { screamingSnakeToTitle } from "@/lib/utils";
-import { Product } from "@prisma/client";
+import { ProductDTO } from "@/lib/DTO/product";
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<ProductDTO>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -52,6 +52,30 @@ export const columns: ColumnDef<Product>[] = [
     header: "Description",
   },
   {
+    header: "# Stock",
+    cell: ({ row }) => {
+      const product = row.original;
+      const inStockItems = product.purchaseOrderItems.filter(
+        (item) => item.status === "IN_STOCK"
+      );
+      const stockCount = inStockItems.reduce(
+        (sum, item) => (sum += item.quantity),
+        0
+      );
+      return <div>{stockCount}</div>;
+    },
+  },
+  {
+    header: "# Variants",
+    cell: ({ row }) => {
+      const product = row.original;
+      const variants = product.purchaseOrderItems.filter(
+        (item) => item.status === "IN_STOCK"
+      );
+      return <div>{variants.length}</div>;
+    },
+  },
+  {
     accessorKey: "cost",
     header: () => <div>Cost</div>,
     cell: ({ row }) => {
@@ -81,6 +105,7 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
+      const product = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -99,6 +124,10 @@ export const columns: ColumnDef<Product>[] = [
             <DropdownMenuItem>
               <Trash />
               Delete
+            </DropdownMenuItem>
+            <DropdownMenuItem data-id={product.id} data-action="details">
+              <Eye />
+              View Details
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,4 +1,5 @@
-import "server-only";
+"use server";
+
 import { jwtVerify, SignJWT } from "jose";
 import z from "zod";
 import { SessionPayload } from "../zod-definitions";

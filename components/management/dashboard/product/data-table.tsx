@@ -33,6 +33,14 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ProductDTO } from "@/lib/DTO/product";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -69,7 +77,20 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-
+  const [product, setProduct] = React.useState<ProductDTO | null>(null);
+  const [open, setOpen] = React.useState<boolean>(false);
+  const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    const menuItem =
+      ((e.target as HTMLElement).closest("[data-id]") as HTMLDivElement) ||
+      null;
+    if (!menuItem) return;
+    const poId = menuItem.dataset.id;
+    const action = menuItem.dataset.action;
+    const selectedProduct =
+      (data as ProductDTO[]).find((product) => product.id === poId) || null;
+    setProduct(selectedProduct);
+    setOpen(true);
+  };
   return (
     <div>
       <div className="flex items-center py-4">
@@ -128,7 +149,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody onClick={handleClick}>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -180,6 +201,34 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold">
+              {product?.name}
+            </DialogTitle>
+            <DialogDescription>Available variants and stocks</DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 grid grid-cols-3 gap-4">
+            {product?.purchaseOrderItems.map((item) => (
+              <div
+                key={item.id}
+                className="border rounded-lg p-3 flex flex-col items-center justify-center bg-muted/30"
+              >
+                <span className="text-lg font-bold">
+                  {item.size || item.shoeSize}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {item.color}
+                </span>
+                <span className="mt-1 text-sm font-medium">
+                  Stock: {item.quantity}
+                </span>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

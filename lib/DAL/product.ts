@@ -3,6 +3,7 @@ import { AddProductFormSchema } from "../zod-definitions";
 import { prisma } from "../prisma";
 import { Product, ProductStatus } from "@prisma/client";
 import { unstable_cache } from "next/cache";
+import { ProductDTO } from "../DTO/product";
 
 export async function createNewProduct(
   data: z.infer<typeof AddProductFormSchema>
@@ -21,8 +22,12 @@ export async function createNewProduct(
 }
 
 export const getProducts = unstable_cache(
-  async (): Promise<Product[]> => {
-    const products = await prisma.product.findMany();
+  async (): Promise<ProductDTO[]> => {
+    const products = await prisma.product.findMany({
+      include: {
+        purchaseOrderItems: true,
+      },
+    });
     return products;
   },
   ["getProducts"],

@@ -35,6 +35,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PurchaseOrderDTO } from "@/lib/DTO/purchase-orders";
 import { usePathname, useRouter } from "next/navigation";
+import { deliverItems, orderReceived } from "@/lib/actions/purchase-order";
+import { toast } from "sonner";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -73,13 +75,31 @@ export function DataTable<TData, TValue>({
   });
   const router = useRouter();
   const pathName = usePathname();
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     const menuItem =
       ((e.target as HTMLElement).closest("[data-id]") as HTMLDivElement) ||
       null;
     if (!menuItem) return;
     const poId = menuItem.dataset.id;
-    router.replace(`${pathName}/${poId}`);
+    const action = menuItem.dataset.action;
+    if (!poId || !action) return;
+    switch (action) {
+      case "view": {
+        router.replace(`${pathName}/${poId}`);
+        break;
+      }
+      case "received": {
+        const result = await orderReceived(poId);
+        if (result.success) toast.success(result.success.message);
+        if (result.failure) toast.error(result.failure.error);
+        break;
+      }
+      case "deliver": {
+        const result = await deliverItems(poId);
+        if (result.success) toast.success(result.success.message);
+        if (result.failure) toast.error(result.failure.error);
+      }
+    }
   };
   return (
     <div>
