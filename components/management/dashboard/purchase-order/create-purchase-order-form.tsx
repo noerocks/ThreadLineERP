@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -17,12 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SheetFooter } from "@/components/ui/sheet";
 import { createPurchaseOrder } from "@/lib/actions/purchase-order";
 import { SuppliersDTO } from "@/lib/DTO/suppliers";
 import { CreatePurchaseOrderSchehma } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Color, Product, ShirtSize } from "@prisma/client";
+import { Product } from "@prisma/client";
 import { Check, Loader, X } from "lucide-react";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";

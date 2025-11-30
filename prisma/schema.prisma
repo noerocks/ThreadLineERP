@@ -49,12 +49,6 @@ enum PurchaseOrderStatus {
   CANCELLED
 }
 
-enum PurchaseOrderItemStatus {
-  PENDING
-  IN_STOCK
-  OUT_OF_STOCK
-}
-
 enum ShirtSize {
   XS
   S
@@ -135,15 +129,30 @@ model VerificationToken {
 }
 
 model Product {
-  id                 String              @id @default(cuid())
-  status             ProductStatus
-  name               String
-  description        String?
-  cost               Float               @default(0)
-  price              Float               @default(0)
-  vatAmount          Float               @default(0)
-  category           Category
-  gender             Gender
+  id          String           @id @default(cuid())
+  status      ProductStatus
+  name        String
+  description String?
+  photoURL    String?
+  cost        Float            @default(0)
+  price       Float            @default(0)
+  vatAmount   Float            @default(0)
+  category    Category
+  gender      Gender
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  variants    ProductVariant[]
+}
+
+model ProductVariant {
+  id                 String              @id @default(cuid())   
+  sku                String              @unique
+  product            Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId          String
+  size               ShirtSize?
+  shoeSize           Float?              @default(0)
+  color              Color
+  stock              Int                 @default(0)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   purchaseOrderItems PurchaseOrderItem[]
@@ -173,19 +182,15 @@ model PurchaseOrder {
 }
 
 model PurchaseOrderItem {
-  id        String                  @id @default(cuid())
-  status    PurchaseOrderItemStatus @default(PENDING)
-  order     PurchaseOrder           @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId   String
-  product   Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String
-  size      ShirtSize?
-  shoeSize  Float?
-  color     Color
-  quantity  Int
-  unitPrice Float
-  vatAmount Float
-  lineTotal Float
-  createdAt DateTime                @default(now())
-  updatedAt DateTime                @updatedAt
+  id               String                  @id @default(cuid())
+  order            PurchaseOrder           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId          String
+  variant          ProductVariant          @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  productVariantId String
+  quantity         Int
+  unitPrice        Float
+  vatAmount        Float
+  lineTotal        Float
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
 }

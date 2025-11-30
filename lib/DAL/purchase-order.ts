@@ -23,6 +23,13 @@ export async function updatePurchaseOrderById(data: Partial<PurchaseOrder>) {
       id: data.id,
     },
     data,
+    include: {
+      items: {
+        include: {
+          variant: true,
+        },
+      },
+    },
   });
   return purchaseOrder;
 }
@@ -34,7 +41,12 @@ export const getAllPurchaseOrders = unstable_cache(
         supplier: true,
         items: {
           include: {
-            product: true,
+            variant: {
+              include: {
+                product: true,
+                purchaseOrderItems: true,
+              },
+            },
           },
         },
       },
@@ -57,7 +69,12 @@ export const getAllPurchaseOrdersBySupplierId = unstable_cache(
         supplier: true,
         items: {
           include: {
-            product: true,
+            variant: {
+              include: {
+                product: true,
+                purchaseOrderItems: true,
+              },
+            },
           },
         },
       },
@@ -79,7 +96,12 @@ export async function getPurchaseOrderById(id: string) {
       supplier: true,
       items: {
         include: {
-          product: true,
+          variant: {
+            include: {
+              product: true,
+              purchaseOrderItems: true,
+            },
+          },
         },
       },
     },

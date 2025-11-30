@@ -211,18 +211,19 @@ const PurchaseOrderDocument = ({
             {purchaseOrder.items.map((item, index) => (
               <View key={item.id} style={styles.tableRow}>
                 <Text style={[styles.tableCell, styles.col1]}>
-                  {item.product.name}
-                  {item.product.description && `\n${item.product.description}`}
+                  {item.variant.product?.name}
+                  {item.variant.product?.description &&
+                    `\n${item.variant.product?.description}`}
                 </Text>
                 <Text style={[styles.tableCell, styles.col2]}>
-                  {item.shoeSize
-                    ? item.shoeSize
-                    : item.size
-                    ? item.size
+                  {item.variant.shoeSize
+                    ? item.variant.shoeSize
+                    : item.variant.size
+                    ? item.variant.size
                     : "N/A"}
                 </Text>
                 <Text style={[styles.tableCell, styles.col3]}>
-                  {item.color || "N/A"}
+                  {item.variant.color || "N/A"}
                 </Text>
                 <Text style={[styles.tableCell, styles.col2]}>
                   {item.quantity}

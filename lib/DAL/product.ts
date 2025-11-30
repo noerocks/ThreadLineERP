@@ -25,7 +25,11 @@ export const getProducts = unstable_cache(
   async (): Promise<ProductDTO[]> => {
     const products = await prisma.product.findMany({
       include: {
-        purchaseOrderItems: true,
+        variants: {
+          include: {
+            purchaseOrderItems: true,
+          },
+        },
       },
     });
     return products;

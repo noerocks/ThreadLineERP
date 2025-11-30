@@ -210,19 +210,19 @@ export function DataTable<TData, TValue>({
             <DialogDescription>Available variants and stocks</DialogDescription>
           </DialogHeader>
           <div className="mt-4 grid grid-cols-3 gap-4">
-            {product?.purchaseOrderItems.map((item) => (
+            {product?.variants.map((variant) => (
               <div
-                key={item.id}
+                key={variant.id}
                 className="border rounded-lg p-3 flex flex-col items-center justify-center bg-muted/30"
               >
                 <span className="text-lg font-bold">
-                  {item.size || item.shoeSize}
+                  {variant.size || variant.shoeSize}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  {item.color}
+                  {variant.color}
                 </span>
                 <span className="mt-1 text-sm font-medium">
-                  Stock: {item.quantity}
+                  Stock: {variant.stock}
                 </span>
               </div>
             ))}

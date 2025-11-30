@@ -11,6 +11,10 @@ import {
 } from "../DAL/purchase-item";
 import { revalidateTag } from "next/cache";
 import { Color, Product, ShirtSize } from "@prisma/client";
+import {
+  createProductVariant,
+  getProductVariantBySKUandProductId,
+} from "../DAL/product-variant";
 
 export async function createPurchaseOrder(
   supplierId: string,
@@ -30,27 +34,56 @@ export async function createPurchaseOrder(
     const purchaseOrder = await createPurchaseOrderDAL(supplierId, address);
     if (!purchaseOrder)
       return { failure: { error: "Error in creating purchase order" } };
-    const cartItems = cart.map((item) => {
-      const cost = Number(item.product.cost);
+    const purchaseOrderItems: {
+      orderId: string;
+      productVariantId: string;
+      quantity: number;
+      unitPrice: number;
+      vatAmount: number;
+      lineTotal: number;
+    }[] = [];
+    const variantSKUs: Record<string, string> = {};
+    for (let i = 0; i <= cart.length - 1; i++) {
+      const { product, color, size, quantity } = cart[i];
+      const cost = Number(product.cost);
+      const sku = `${product.category}-${product.name
+        .split(" ")
+        .map((word) => word[0].toUpperCase())
+        .join("")}-${color}-${size}`;
       const vatAmount = cost + cost * 0.12;
-      const isShoeSize = item.product.category === "FOOTWEAR";
-      return {
+      let productVariantId: string | undefined = variantSKUs[sku];
+      if (!productVariantId) {
+        const productVariant = await getProductVariantBySKUandProductId(
+          sku,
+          product.id
+        );
+        if (productVariant) {
+          variantSKUs[sku] = productVariant.id;
+          productVariantId = productVariant.id;
+        } else {
+          const { id } = await createProductVariant({
+            sku,
+            productId: product.id,
+            size: product.category === "FOOTWEAR" ? null : (size as ShirtSize),
+            shoeSize: product.category === "FOOTWEAR" ? Number(size) : null,
+            color: color as Color,
+          });
+          variantSKUs[sku] = id;
+          productVariantId = id;
+        }
+      }
+      purchaseOrderItems.push({
         orderId: purchaseOrder.id,
-        productId: item.product.id,
-        quantity: Number(item.quantity),
-        color: item.color as Color,
-        size:
-          item.product.category === "FOOTWEAR"
-            ? null
-            : (item.size as ShirtSize),
-        shoeSize:
-          item.product.category === "FOOTWEAR" ? Number(item.size) : null,
-        unitPrice: cost,
-        vatAmount: vatAmount,
-        lineTotal: Number(item.quantity) * vatAmount,
-      };
-    });
-    const purchaseItems = await createManyPurchaseOrderItems(cartItems);
+        productVariantId,
+        quantity: Number(quantity),
+        unitPrice: product.cost,
+        vatAmount,
+        lineTotal: Number(quantity) * vatAmount,
+      });
+    }
+    const purchaseItems = await createManyPurchaseOrderItems(
+      purchaseOrderItems
+    );
     if (!purchaseItems)
       return { failure: { error: "Error in creating purchase order items" } };
     revalidateTag("purchaseOrders");
@@ -71,9 +104,7 @@ export async function orderReceived(purchaseOrderId: string) {
       id: purchaseOrderId,
       status: "ARRIVED",
     });
-    await updatePurchaseItemByPurchaseOrder(purchaseOrderId, {
-      status: "IN_STOCK",
-    });
+    //update product variant
     revalidateTag("purchaseOrders");
     revalidateTag("products");
     return {

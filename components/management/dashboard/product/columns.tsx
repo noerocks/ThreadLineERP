@@ -55,11 +55,8 @@ export const columns: ColumnDef<ProductDTO>[] = [
     header: "# Stock",
     cell: ({ row }) => {
       const product = row.original;
-      const inStockItems = product.purchaseOrderItems.filter(
-        (item) => item.status === "IN_STOCK"
-      );
-      const stockCount = inStockItems.reduce(
-        (sum, item) => (sum += item.quantity),
+      const stockCount = product.variants.reduce(
+        (sum, variant) => (sum += variant.stock),
         0
       );
       return <div>{stockCount}</div>;
@@ -69,10 +66,7 @@ export const columns: ColumnDef<ProductDTO>[] = [
     header: "# Variants",
     cell: ({ row }) => {
       const product = row.original;
-      const variants = product.purchaseOrderItems.filter(
-        (item) => item.status === "IN_STOCK"
-      );
-      return <div>{variants.length}</div>;
+      return <div>{product.variants.length}</div>;
     },
   },
   {

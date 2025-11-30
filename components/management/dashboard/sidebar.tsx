@@ -43,7 +43,7 @@ const DashboardSidebar = ({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarNavigation />
+        <SidebarNavigation user={user} />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

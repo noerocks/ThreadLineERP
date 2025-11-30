@@ -112,7 +112,7 @@ const ProductsCards = ({
           <Card
             data-card={true}
             key={product.id}
-            className="basis-[calc(25%-1rem)] pt-0 overflow-hidden border-2"
+            className="basis-[calc(25%-1rem)] pt-0 overflow-hidden border"
           >
             <div className="h-[150px] bg-background flex items-center justify-center">
               <Package size={100} className="text-gray-300" />

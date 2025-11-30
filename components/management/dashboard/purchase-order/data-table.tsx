@@ -33,7 +33,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PurchaseOrderDTO } from "@/lib/DTO/purchase-orders";
 import { usePathname, useRouter } from "next/navigation";
 import { deliverItems, orderReceived } from "@/lib/actions/purchase-order";
 import { toast } from "sonner";

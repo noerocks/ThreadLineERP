@@ -1,18 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { CheckCircle2, Eye, MoreHorizontal, Timer, Truck } from "lucide-react";
+import { CheckCircle2, Timer, Truck } from "lucide-react";
 import { PurchaseOrderDTO } from "@/lib/DTO/purchase-orders";
 import { screamingSnakeToTitle } from "@/lib/utils";
 import ActionsCell from "./actions-cell";

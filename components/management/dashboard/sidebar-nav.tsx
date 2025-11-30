@@ -8,23 +8,41 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { SessionPayload } from "@/lib/zod-definitions";
+import { UserRole } from "@prisma/client";
 import { link } from "fs";
 import { FileText, Package, Truck } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import z from "zod";
 
-const SidebarNavigation = () => {
+const SidebarNavigation = ({
+  user,
+}: {
+  user: z.infer<typeof SessionPayload>;
+}) => {
   const pathName = usePathname();
   const navGroup = [
     {
       label: "Inventory",
       items: [
-        { label: "Products", link: "/dashboard/products", icon: <Package /> },
-        { label: "Suppliers", link: "/dashboard/suppliers", icon: <Truck /> },
+        {
+          label: "Products",
+          link: "/dashboard/products",
+          icon: <Package />,
+          authorizedUsers: [UserRole.ADMIN],
+        },
+        {
+          label: "Suppliers",
+          link: "/dashboard/suppliers",
+          icon: <Truck />,
+          authorizedUsers: [UserRole.ADMIN],
+        },
         {
           label: "Purchase Order",
           link: "/dashboard/purchase-orders",
           icon: <FileText />,
+          authorizedUsers: [UserRole.ADMIN, UserRole.SUPPLIER],
         },
       ],
     },
@@ -36,19 +54,21 @@ const SidebarNavigation = () => {
           <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {group.items.map((item) => (
-                <SidebarMenuItem key={item.link}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathName.includes(item.link)}
-                  >
-                    <Link href={item.link}>
-                      {item.icon}
-                      {item.label}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {group.items.map((item) =>
+                (item.authorizedUsers as UserRole[]).includes(user.role) ? (
+                  <SidebarMenuItem key={item.link}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathName.includes(item.link)}
+                    >
+                      <Link href={item.link}>
+                        {item.icon}
+                        {item.label}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ) : null
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
