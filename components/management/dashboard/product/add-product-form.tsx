@@ -38,23 +38,31 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
+import FileUpload from "./file-upload";
+import { ProductDTO } from "@/lib/DTO/product";
 
-const AddSupplierForm = ({
-  className,
-  ...props
-}: React.ComponentProps<"form">) => {
+const AddProductForm = ({
+  product,
+  hideTrigger,
+  openSheet,
+  setOpenSheet,
+}: {
+  product?: ProductDTO;
+  hideTrigger?: boolean;
+  openSheet?: boolean;
+  setOpenSheet?: (value: boolean) => void;
+}) => {
   const form = useForm<z.infer<typeof AddProductFormSchema>>({
     resolver: zodResolver(AddProductFormSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      category: undefined,
-      gender: undefined,
-      cost: "0",
+      name: product?.name ? product.name : "",
+      description: product?.description ? product.description : "",
+      category: product?.category ? product.category : undefined,
+      gender: product?.gender ? product.gender : undefined,
+      cost: product?.cost ? product.cost.toString() : "0",
     },
   });
   const [pending, startTransition] = useTransition();
-  const [open, setOpen] = useState<boolean>(false);
   const onSubmit = async (data: z.infer<typeof AddProductFormSchema>) => {
     startTransition(async () => {
       const result = await addNewProduct(data);
@@ -62,19 +70,20 @@ const AddSupplierForm = ({
         toast.error(result.failure.error);
       } else {
         form.reset();
-        setOpen(false);
         toast.success(result.success.message);
       }
     });
   };
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Plus />
-          Add New Product
-        </Button>
-      </SheetTrigger>
+    <Sheet open={openSheet} onOpenChange={setOpenSheet}>
+      {!hideTrigger && (
+        <SheetTrigger asChild>
+          <Button className="flex items-center gap-2">
+            <Plus />
+            Add New Product
+          </Button>
+        </SheetTrigger>
+      )}
       <SheetContent className="flex flex-col">
         <SheetHeader>
           <SheetTitle>Add New Product</SheetTitle>
@@ -82,7 +91,8 @@ const AddSupplierForm = ({
         </SheetHeader>
         <ScrollArea className="flex-1 min-h-0">
           <Form {...form}>
-            <form className={cn(className)}>
+            <form className="flex flex-col gap-5 px-4">
+              <FileUpload />
               <FormField
                 control={form.control}
                 name="name"
@@ -200,4 +210,4 @@ const AddSupplierForm = ({
   );
 };
 
-export default AddSupplierForm;
+export default AddProductForm;

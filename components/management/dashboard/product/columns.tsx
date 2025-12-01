@@ -111,7 +111,7 @@ export const columns: ColumnDef<ProductDTO>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem data-id={product.id} data-action="edit">
               <Pencil />
               Edit
             </DropdownMenuItem>

@@ -41,6 +41,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import AddProductForm from "./add-product-form";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -79,6 +80,7 @@ export function DataTable<TData, TValue>({
   });
   const [product, setProduct] = React.useState<ProductDTO | null>(null);
   const [open, setOpen] = React.useState<boolean>(false);
+  const [openSheet, setOpenSheet] = React.useState<boolean>(false);
   const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     const menuItem =
       ((e.target as HTMLElement).closest("[data-id]") as HTMLDivElement) ||
@@ -89,7 +91,16 @@ export function DataTable<TData, TValue>({
     const selectedProduct =
       (data as ProductDTO[]).find((product) => product.id === poId) || null;
     setProduct(selectedProduct);
-    setOpen(true);
+    switch (action) {
+      case "details": {
+        setOpen(true);
+        break;
+      }
+      case "edit": {
+        setOpenSheet(true);
+        break;
+      }
+    }
   };
   return (
     <div>
@@ -229,6 +240,14 @@ export function DataTable<TData, TValue>({
           </div>
         </DialogContent>
       </Dialog>
+      {product && (
+        <AddProductForm
+          product={product}
+          hideTrigger={true}
+          openSheet={openSheet}
+          setOpenSheet={setOpenSheet}
+        />
+      )}
     </div>
   );
 }

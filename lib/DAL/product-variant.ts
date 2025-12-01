@@ -1,4 +1,4 @@
-import { Color, ShirtSize } from "@prisma/client";
+import { Color, ProductVariant, ShirtSize } from "@prisma/client";
 import { prisma } from "../prisma";
 
 export async function createProductVariant(data: {
@@ -23,6 +23,25 @@ export async function getProductVariantBySKUandProductId(
       sku,
       productId,
     },
+  });
+  return productVariant;
+}
+
+export async function getProductVariantById(id: string) {
+  const productVariant = await prisma.productVariant.findUnique({
+    where: {
+      id,
+    },
+  });
+  return productVariant;
+}
+
+export async function updateProductVariantById(data: Partial<ProductVariant>) {
+  const productVariant = await prisma.productVariant.update({
+    where: {
+      id: data.id,
+    },
+    data,
   });
   return productVariant;
 }

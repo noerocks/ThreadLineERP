@@ -16,7 +16,7 @@ const ProductsPage = async () => {
           Products
         </p>
         <div className="flex items-center gap-2">
-          <AddProductForm className="flex flex-col gap-5 px-4" />
+          <AddProductForm />
         </div>
       </div>
       <Card className="bg-background">

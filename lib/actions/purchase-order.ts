@@ -13,7 +13,9 @@ import { revalidateTag } from "next/cache";
 import { Color, Product, ShirtSize } from "@prisma/client";
 import {
   createProductVariant,
+  getProductVariantById,
   getProductVariantBySKUandProductId,
+  updateProductVariantById,
 } from "../DAL/product-variant";
 
 export async function createPurchaseOrder(
@@ -104,7 +106,22 @@ export async function orderReceived(purchaseOrderId: string) {
       id: purchaseOrderId,
       status: "ARRIVED",
     });
-    //update product variant
+    const purchaseOrderItems = purchaseOrder.items;
+    for (let i = 0; i <= purchaseOrderItems.length - 1; i++) {
+      const item = purchaseOrderItems[i];
+      const productVariant = await getProductVariantById(item.productVariantId);
+      if (!productVariant)
+        return {
+          failure: {
+            error: "Action interrupted. Error in fetching product variant.",
+          },
+        };
+      const newStock = productVariant.stock + item.quantity;
+      const newProductVariant = await updateProductVariantById({
+        id: productVariant.id,
+        stock: newStock,
+      });
+    }
     revalidateTag("purchaseOrders");
     revalidateTag("products");
     return {
