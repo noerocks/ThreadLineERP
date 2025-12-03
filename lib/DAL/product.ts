@@ -21,6 +21,35 @@ export async function createNewProduct(
   return product;
 }
 
+export async function updateProductById(
+  data: z.infer<typeof AddProductFormSchema> & { id: string }
+) {
+  const product = await prisma.product.update({
+    where: {
+      id: data.id,
+    },
+    data: {
+      name: data.name,
+      category: data.category,
+      gender: data.gender,
+      status: ProductStatus.OUT_OF_STOCK,
+      description: data.description,
+      cost: Number(data.cost),
+    },
+  });
+  return product;
+}
+
+export async function sloppyUpdateProductById(data: Partial<Product>) {
+  const product = await prisma.product.update({
+    where: {
+      id: data.id,
+    },
+    data,
+  });
+  return product;
+}
+
 export const getProducts = unstable_cache(
   async (): Promise<ProductDTO[]> => {
     const products = await prisma.product.findMany({

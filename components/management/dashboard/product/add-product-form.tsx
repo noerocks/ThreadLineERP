@@ -28,7 +28,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { addNewProduct } from "@/lib/actions/product";
+import { addNewProduct, updateProduct } from "@/lib/actions/product";
 import { cn, screamingSnakeToTitle } from "@/lib/utils";
 import { AddProductFormSchema } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,12 +65,22 @@ const AddProductForm = ({
   const [pending, startTransition] = useTransition();
   const onSubmit = async (data: z.infer<typeof AddProductFormSchema>) => {
     startTransition(async () => {
-      const result = await addNewProduct(data);
-      if (result.failure) {
-        toast.error(result.failure.error);
+      if (!product) {
+        const result = await addNewProduct(data);
+        if (result.failure) {
+          toast.error(result.failure.error);
+        } else {
+          form.reset();
+          toast.success(result.success.message);
+        }
       } else {
-        form.reset();
-        toast.success(result.success.message);
+        const result = await updateProduct({ id: product.id, ...data });
+        if (result.failure) {
+          toast.error(result.failure.error);
+        } else {
+          form.reset();
+          toast.success(result.success.message);
+        }
       }
     });
   };
@@ -92,7 +102,7 @@ const AddProductForm = ({
         <ScrollArea className="flex-1 min-h-0">
           <Form {...form}>
             <form className="flex flex-col gap-5 px-4">
-              <FileUpload />
+              {product && <FileUpload product={product} />}
               <FormField
                 control={form.control}
                 name="name"
