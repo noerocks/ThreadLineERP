@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { Eye, ImageIcon, MoreHorizontal, Pencil, Trash } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { screamingSnakeToTitle } from "@/lib/utils";
@@ -46,10 +46,29 @@ export const columns: ColumnDef<ProductDTO>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Product Name" />
     ),
+    cell: ({ row }) => {
+      const product = row.original;
+      return (
+        <div className="flex items-center gap-2">
+          <div className="size-5 bg-gray-200 flex items-center justify-center">
+            {product.photoURL ? (
+              <img src={product.photoURL} className="object-cover" />
+            ) : (
+              <ImageIcon size={15} className="text-gray-500" />
+            )}
+          </div>
+          <p>{product.name}</p>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "description",
     header: "Description",
+    cell: ({ row }) => {
+      const product = row.original;
+      return <div className="w-[250px] truncate">{product.description}</div>;
+    },
   },
   {
     header: "# Stock",

@@ -49,6 +49,8 @@ const FileUpload = ({ product }: { product: ProductDTO }) => {
       "image/png": [],
       "image/jpeg": [],
       "image/jpg": [],
+      "image/webp": [],
+      "image/avif": [],
     },
   });
   const uploadFile = async () => {
@@ -94,8 +96,8 @@ const FileUpload = ({ product }: { product: ProductDTO }) => {
     <>
       {productFile && !open ? (
         <div className="flex flex-col gap-5">
-          <div className="h-50 overflow-hidden">
-            <img src={productFile} className="object-center" />
+          <div className="h-52 w-full flex items-center justify-center bg-gray-100">
+            <img src={productFile} className="object-contain h-full" />
           </div>
           <Button
             variant="outline"
@@ -123,7 +125,7 @@ const FileUpload = ({ product }: { product: ProductDTO }) => {
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 p-2 border">
                       <File size={15} />
-                      <p>{file.name}</p>
+                      <p className="w-[200px] truncate">{file.name}</p>
                       <span onClick={unattachFile}>
                         <X size={20} />
                       </span>

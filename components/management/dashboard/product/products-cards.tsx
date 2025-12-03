@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { screamingSnakeToTitle } from "@/lib/utils";
+import { cn, screamingSnakeToTitle } from "@/lib/utils";
 
 type CartItem = {
   product: Product;
@@ -112,53 +112,62 @@ const ProductsCards = ({
           <Card
             data-card={true}
             key={product.id}
-            className="basis-[calc(25%-1rem)] pt-0 overflow-hidden border"
+            className="basis-[calc(25%-1rem)] pt-0 overflow-hidden border rounded-md flex flex-col"
           >
-            <div className="h-[150px] bg-background flex items-center justify-center">
-              <Package size={100} className="text-gray-300" />
+            <div
+              className={cn(
+                "h-[150px] w-full flex items-center justify-center bg-background",
+                {
+                  "bg-gray-50": product.photoURL,
+                }
+              )}
+            >
+              {product.photoURL ? (
+                <img src={product.photoURL} className="object-contain h-full" />
+              ) : (
+                <Package size={100} className="text-gray-300" />
+              )}
             </div>
-            <CardContent>
-              <div className="flex flex-col gap-2">
-                <p className="text-sm">{product.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {product.description}
-                </p>
-                <div className="flex items-center gap-2">
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Size" data-size />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(product.category !== "FOOTWEAR"
-                        ? Object.values(ShirtSize)
-                        : shoeSizesUS
-                      ).map((size) => (
-                        <SelectItem key={size} value={size.toString()}>
-                          {size}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Color" data-color />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.values(Color).map((color) => (
-                        <SelectItem key={color} value={color}>
-                          {screamingSnakeToTitle(color)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <p className="font-semibold text-xl">
-                  {new Intl.NumberFormat("en-PH", {
-                    style: "currency",
-                    currency: "PHP",
-                  }).format(product.cost)}
-                </p>
+            <CardContent className="flex-1 flex flex-col gap-2">
+              <p className="text-sm flex-1">{product.name}</p>
+              <p className="text-sm text-muted-foreground flex-1">
+                {product.description}
+              </p>
+              <div className="flex items-center gap-2 flex-1">
+                <Select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Size" data-size />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(product.category !== "FOOTWEAR"
+                      ? Object.values(ShirtSize)
+                      : shoeSizesUS
+                    ).map((size) => (
+                      <SelectItem key={size} value={size.toString()}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Color" data-color />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(Color).map((color) => (
+                      <SelectItem key={color} value={color}>
+                        {screamingSnakeToTitle(color)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+              <p className="font-semibold text-xl">
+                {new Intl.NumberFormat("en-PH", {
+                  style: "currency",
+                  currency: "PHP",
+                }).format(product.cost)}
+              </p>
             </CardContent>
             <div className="flex items-center justify-end gap-2 px-5">
               <Input
