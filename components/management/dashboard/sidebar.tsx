@@ -31,7 +31,7 @@ const DashboardSidebar = ({
   user: z.infer<typeof SessionPayload>;
 }) => {
   return (
-    <Sidebar variant="inset" collapsible="icon">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

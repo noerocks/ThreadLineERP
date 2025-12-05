@@ -3,6 +3,7 @@ import { columns } from "@/components/management/dashboard/product/columns";
 import { DataTable } from "@/components/management/dashboard/product/data-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { getProducts } from "@/lib/DAL/product";
 import { Package } from "lucide-react";
 

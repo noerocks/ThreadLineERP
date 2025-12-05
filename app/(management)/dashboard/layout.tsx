@@ -1,5 +1,6 @@
 import DashboardHeader from "@/components/management/dashboard/header";
 import DashboardSidebar from "@/components/management/dashboard/sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   SidebarInset,
   SidebarProvider,
@@ -13,9 +14,11 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
       <DashboardSidebar user={user} />
-      <SidebarInset className="flex flex-col">
+      <SidebarInset className="flex flex-col h-screen">
         <DashboardHeader />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full">{children}</ScrollArea>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

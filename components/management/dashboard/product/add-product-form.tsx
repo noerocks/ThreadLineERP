@@ -34,7 +34,7 @@ import { AddProductFormSchema } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Category, Gender } from "@prisma/client";
 import { Loader, Plus } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -52,6 +52,7 @@ const AddProductForm = ({
   openSheet?: boolean;
   setOpenSheet?: (value: boolean) => void;
 }) => {
+  console.log(product);
   const form = useForm<z.infer<typeof AddProductFormSchema>>({
     resolver: zodResolver(AddProductFormSchema),
     defaultValues: {
@@ -62,6 +63,15 @@ const AddProductForm = ({
       cost: product?.cost ? product.cost.toString() : "0",
     },
   });
+  useEffect(() => {
+    form.reset({
+      name: product?.name ? product.name : "",
+      description: product?.description ? product.description : "",
+      category: product?.category ? product.category : undefined,
+      gender: product?.gender ? product.gender : undefined,
+      cost: product?.cost ? product.cost.toString() : "0",
+    });
+  }, [product]);
   const [pending, startTransition] = useTransition();
   const onSubmit = async (data: z.infer<typeof AddProductFormSchema>) => {
     startTransition(async () => {

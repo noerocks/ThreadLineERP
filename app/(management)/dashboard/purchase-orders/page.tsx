@@ -22,33 +22,31 @@ const PurchaseOrderPage = async () => {
       ? await getAllPurchaseOrdersBySupplierId(user.id)
       : await getAllPurchaseOrders();
   return (
-    <ScrollArea className="h-full">
-      <div className="py-10 px-40 flex flex-col gap-5">
-        <div className="flex items-center justify-between">
-          <p className="text-xl flex items-center gap-2 font-semibold">
-            <FileText />
-            Purchase Order
-          </p>
-        </div>
-        <Tabs defaultValue="po">
-          <TabsList className="bg-background border">
-            <TabsTrigger value="po">
-              Purchase Orders
-              <Badge variant="destructive">{purchaseOrders.length}</Badge>
-            </TabsTrigger>
-            {user.role === "ADMIN" && (
-              <TabsTrigger value="create">Create Purchase Order</TabsTrigger>
-            )}
-          </TabsList>
-          <TabsContent value="po">
-            <DataTable columns={columns} data={purchaseOrders} />
-          </TabsContent>
-          <TabsContent value="create">
-            <ProductsCards products={products} suppliers={suppliers} />
-          </TabsContent>
-        </Tabs>
+    <div className="py-10 px-40 flex flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <p className="text-xl flex items-center gap-2 font-semibold">
+          <FileText />
+          Purchase Order
+        </p>
       </div>
-    </ScrollArea>
+      <Tabs defaultValue="po">
+        <TabsList className="bg-background border">
+          <TabsTrigger value="po">
+            Purchase Orders
+            <Badge variant="destructive">{purchaseOrders.length}</Badge>
+          </TabsTrigger>
+          {user.role === "ADMIN" && (
+            <TabsTrigger value="create">Create Purchase Order</TabsTrigger>
+          )}
+        </TabsList>
+        <TabsContent value="po">
+          <DataTable columns={columns} data={purchaseOrders} />
+        </TabsContent>
+        <TabsContent value="create">
+          <ProductsCards products={products} suppliers={suppliers} />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
