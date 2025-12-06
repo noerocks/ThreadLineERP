@@ -30,7 +30,7 @@ const SidebarNavigation = ({
           label: "Products",
           link: "/dashboard/products",
           icon: <Package />,
-          authorizedUsers: [UserRole.ADMIN],
+          authorizedUsers: [UserRole.ADMIN, UserRole.SUPPLIER],
         },
         {
           label: "Suppliers",

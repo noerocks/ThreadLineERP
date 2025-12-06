@@ -29,7 +29,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { addNewProduct, updateProduct } from "@/lib/actions/product";
-import { cn, screamingSnakeToTitle } from "@/lib/utils";
+import { screamingSnakeToTitle } from "@/lib/utils";
 import { AddProductFormSchema } from "@/lib/zod-definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Category, Gender } from "@prisma/client";
@@ -42,17 +42,18 @@ import FileUpload from "./file-upload";
 import { ProductDTO } from "@/lib/DTO/product";
 
 const AddProductForm = ({
+  supplierId,
   product,
   hideTrigger,
   openSheet,
   setOpenSheet,
 }: {
+  supplierId?: string;
   product?: ProductDTO;
   hideTrigger?: boolean;
   openSheet?: boolean;
   setOpenSheet?: (value: boolean) => void;
 }) => {
-  console.log(product);
   const form = useForm<z.infer<typeof AddProductFormSchema>>({
     resolver: zodResolver(AddProductFormSchema),
     defaultValues: {
@@ -76,7 +77,7 @@ const AddProductForm = ({
   const onSubmit = async (data: z.infer<typeof AddProductFormSchema>) => {
     startTransition(async () => {
       if (!product) {
-        const result = await addNewProduct(data);
+        const result = await addNewProduct(supplierId!, data);
         if (result.failure) {
           toast.error(result.failure.error);
         } else {

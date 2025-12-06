@@ -6,20 +6,34 @@ import { Button } from "../ui/button";
 import { ModeToggle } from "../theme-toggle";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getInitialsFromName } from "@/lib/utils";
+import { getInitialsFromName, screamingSnakeToTitle } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Category } from "@prisma/client";
+import Link from "next/link";
 
 const ShopHeader = () => {
   const { data: session } = useSession();
   const user = session?.user;
+  const categories = [
+    "Shop All",
+    ...Object.values(Category).map((cat) => screamingSnakeToTitle(cat)),
+  ];
+  console.log(categories);
   return (
-    <header className="flex items-center justify-between p-5 border">
+    <header className="flex items-center justify-between px-20 py-5 border-b">
       <p className="text-4xl">ThreadLine.</p>
+      <div className="flex items-center gap-10">
+        {categories.map((cat) => (
+          <Link href="/" key={cat} className="text-muted-foreground">
+            {cat}
+          </Link>
+        ))}
+      </div>
       <div className="flex items-center gap-5">
         <ModeToggle />
         <Button variant="ghost">

@@ -1,14 +1,17 @@
 import AddProductForm from "@/components/management/dashboard/product/add-product-form";
 import { columns } from "@/components/management/dashboard/product/columns";
 import { DataTable } from "@/components/management/dashboard/product/data-table";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { getProducts } from "@/lib/DAL/product";
+import { verifySession } from "@/lib/actions/session";
+import { getProducts, getProductsBySupplierId } from "@/lib/DAL/product";
 import { Package } from "lucide-react";
 
 const ProductsPage = async () => {
-  const products = await getProducts();
+  const { user } = await verifySession();
+  const products =
+    user.role === "ADMIN"
+      ? await getProducts()
+      : await getProductsBySupplierId(user.id);
   return (
     <div className="py-10 px-40 flex flex-col gap-5">
       <div className="flex items-center justify-between">
@@ -17,7 +20,7 @@ const ProductsPage = async () => {
           Products
         </p>
         <div className="flex items-center gap-2">
-          <AddProductForm />
+          {user.role === "SUPPLIER" && <AddProductForm supplierId={user.id} />}
         </div>
       </div>
       <Card className="bg-background">

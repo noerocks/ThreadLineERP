@@ -36,26 +36,26 @@ export const RegisterFormSchema = z
 
 export const LoginFormSchema = z.object({
   email: z.email().trim(),
-  password: z.string().min(1, "This field is required"),
+  password: z.string().min(1, "This field is required").trim(),
 });
 
 export const AddSupplierFormSchema = z.object({
-  name: z.string().min(1, "This field is required"),
-  contactName: z.string().min(1, "This field is required"),
-  email: z.email(),
-  phone: z.string().min(1, "This field is required"),
-  address: z.string().min(1, "This field is required"),
+  name: z.string().min(1, "This field is required").trim(),
+  contactName: z.string().min(1, "This field is required").trim(),
+  email: z.email().trim(),
+  phone: z.string().min(1, "This field is required").trim(),
+  address: z.string().min(1, "This field is required").trim(),
 });
 
 export const AddProductFormSchema = z.object({
-  name: z.string().min(1, "This field is required"),
-  description: z.string().min(1, "This field is required"),
+  name: z.string().min(1, "This field is required").trim(),
+  description: z.string().min(1, "This field is required").trim(),
   category: z.enum(Category, "Please pick a category"),
   gender: z.enum(Gender, "Please pick a gender"),
-  cost: z.string(),
+  cost: z.string().trim(),
 });
 
 export const CreatePurchaseOrderSchehma = z.object({
-  supplier: z.string().min(1, "This field is required"),
-  address: z.string().min(1, "This field is required"),
+  supplier: z.string().min(1, "This field is required").trim(),
+  address: z.string().min(1, "This field is required").trim(),
 });

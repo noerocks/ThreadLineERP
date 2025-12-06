@@ -11,6 +11,7 @@ import {
 import { revalidateTag } from "next/cache";
 
 export async function addNewProduct(
+  supplierId: string,
   data: z.infer<typeof AddProductFormSchema>
 ) {
   const result = AddProductFormSchema.safeParse(data);
@@ -18,7 +19,7 @@ export async function addNewProduct(
   const session = await verifySession();
   if (!session) return { failure: { error: "Unauthenticated" } };
   try {
-    const product = await createNewProduct(data);
+    const product = await createNewProduct(supplierId, data);
     revalidateTag("products");
     return { success: { message: "Product created successfully" } };
   } catch (error) {

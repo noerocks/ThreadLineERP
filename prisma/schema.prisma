@@ -131,6 +131,8 @@ model VerificationToken {
 model Product {
   id          String           @id @default(cuid())
   status      ProductStatus
+  supplier    Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  supplierId String
   name        String
   description String?
   photoURL    String?
@@ -168,6 +170,7 @@ model Supplier {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   purchaseOrders PurchaseOrder[]
+  products       Product[]
 }
 
 model PurchaseOrder {
