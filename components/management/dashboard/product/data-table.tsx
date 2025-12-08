@@ -42,6 +42,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import AddProductForm from "./add-product-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -219,24 +220,40 @@ export function DataTable<TData, TValue>({
             </DialogTitle>
             <DialogDescription>Available variants and stocks</DialogDescription>
           </DialogHeader>
-          <div className="mt-4 grid grid-cols-3 gap-4">
-            {product?.variants.map((variant) => (
-              <div
-                key={variant.id}
-                className="border rounded-lg p-3 flex flex-col items-center justify-center bg-muted/30"
-              >
-                <span className="text-lg font-bold">
-                  {variant.size || variant.shoeSize}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {variant.color}
-                </span>
-                <span className="mt-1 text-sm font-medium">
-                  Stock: {variant.stock}
-                </span>
-              </div>
-            ))}
-          </div>
+          <Tabs>
+            <TabsList className="bg-background border">
+              <TabsTrigger value="overview">Product Overview</TabsTrigger>
+              <TabsTrigger value="stock">Stock</TabsTrigger>
+            </TabsList>
+            <TabsContent value="overview">
+              {product?.photoURL && (
+                <div className="h-60 w-full bg-gray-200">
+                  <img
+                    src={product?.photoURL}
+                    className="object-contain object-center h-full w-full"
+                  />
+                </div>
+              )}
+            </TabsContent>
+            <TabsContent value="stock" className="mt-4 grid grid-cols-3 gap-4">
+              {product?.variants.map((variant) => (
+                <div
+                  key={variant.id}
+                  className="border rounded-lg p-3 flex flex-col items-center justify-center bg-muted/30"
+                >
+                  <span className="text-lg font-bold">
+                    {variant.size || variant.shoeSize}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {variant.color}
+                  </span>
+                  <span className="mt-1 text-sm font-medium">
+                    Stock: {variant.stock}
+                  </span>
+                </div>
+              ))}
+            </TabsContent>
+          </Tabs>
         </DialogContent>
       </Dialog>
       {product && (

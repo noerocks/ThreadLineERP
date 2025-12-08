@@ -23,7 +23,6 @@ const ShopHeader = () => {
     "Shop All",
     ...Object.values(Category).map((cat) => screamingSnakeToTitle(cat)),
   ];
-  console.log(categories);
   return (
     <header className="flex items-center justify-between px-20 py-5 border-b">
       <p className="text-4xl">ThreadLine.</p>

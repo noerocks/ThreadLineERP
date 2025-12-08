@@ -22,7 +22,7 @@ const PurchaseOrderPage = async () => {
       ? await getAllPurchaseOrdersBySupplierId(user.id)
       : await getAllPurchaseOrders();
   return (
-    <div className="py-10 px-40 flex flex-col gap-5">
+    <div className="py-10 px-30 flex flex-col gap-5">
       <div className="flex items-center justify-between">
         <p className="text-xl flex items-center gap-2 font-semibold">
           <FileText />

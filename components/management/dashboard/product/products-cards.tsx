@@ -11,12 +11,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SuppliersDTO } from "@/lib/DTO/suppliers";
-import { Package, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { Filter, Package, Search, ShoppingCart } from "lucide-react";
+import { useEffect, useState } from "react";
 import CreatePurchaseOrderForm from "../purchase-order/create-purchase-order-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Color, Product, ShirtSize } from "@prisma/client";
+import { Category, Color, Product, ShirtSize } from "@prisma/client";
 import {
   Select,
   SelectContent,
@@ -40,7 +40,20 @@ const ProductsCards = ({
   products: Product[];
   suppliers: SuppliersDTO[];
 }) => {
+  const [visibleProducts, setVisibleProducts] = useState<Product[]>(products);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [search, setSearch] = useState<string>("");
+  const [category, setCategory] = useState<string>();
+  useEffect(() => {
+    const filteredProducts = [...products].filter((product) => {
+      const matchesSearch =
+        !search || new RegExp(search, "i").test(product.name);
+      const matchesCategory =
+        !category || category === "ALL" || product.category === category;
+      return matchesSearch && matchesCategory;
+    });
+    setVisibleProducts(filteredProducts);
+  }, [search, category]);
   const handleAddToCart = (e: React.MouseEvent<HTMLDivElement>) => {
     const button =
       ((e.target as HTMLElement).closest(
@@ -107,8 +120,56 @@ const ProductsCards = ({
           </SheetContent>
         </Sheet>
       </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <p className="flex items-center gap-1">
+            <Filter size={20} className="text-muted-foreground" />
+            Filter
+          </p>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Supplier" />
+            </SelectTrigger>
+            <SelectContent>
+              {suppliers.map((supplier) => (
+                <SelectItem value={supplier.id} key={supplier.id}>
+                  {supplier.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select
+            value={category}
+            onValueChange={(value) => setCategory(value as Category)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {["ALL", ...Object.values(Category)].map((cat) => (
+                <SelectItem value={cat} key={cat}>
+                  {screamingSnakeToTitle(cat)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="relative w-[450px]">
+          <Search
+            size={20}
+            className="absolute text-muted-foreground top-[50%] -translate-y-[50%] left-2"
+          />
+          <Input
+            className="px-10"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+          />
+        </div>
+      </div>
       <div className="flex flex-wrap gap-5" onClick={handleAddToCart}>
-        {products.map((product) => (
+        {visibleProducts.map((product) => (
           <Card
             data-card={true}
             key={product.id}

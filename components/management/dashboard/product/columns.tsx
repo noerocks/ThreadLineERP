@@ -17,6 +17,7 @@ import { ArrowUpDown } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { screamingSnakeToTitle } from "@/lib/utils";
 import { ProductDTO } from "@/lib/DTO/product";
+import ActionCell from "./actions-cell";
 
 export const columns: ColumnDef<ProductDTO>[] = [
   {
@@ -119,32 +120,7 @@ export const columns: ColumnDef<ProductDTO>[] = [
     id: "actions",
     cell: ({ row }) => {
       const product = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem data-id={product.id} data-action="edit">
-              <Pencil />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Trash />
-              Delete
-            </DropdownMenuItem>
-            <DropdownMenuItem data-id={product.id} data-action="details">
-              <Eye />
-              View Details
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <ActionCell product={product} />;
     },
   },
 ];
