@@ -36,18 +36,20 @@ type CreatePurchaseOrderFormProps = {
     color: string;
   }[];
   suppliers: SuppliersDTO[];
+  supplierId: string;
   resetCart: (value: []) => void;
 };
 
 const CreatePurchaseOrderForm = ({
   cart,
   suppliers,
+  supplierId,
   resetCart,
 }: CreatePurchaseOrderFormProps) => {
   const form = useForm<z.infer<typeof CreatePurchaseOrderSchehma>>({
     resolver: zodResolver(CreatePurchaseOrderSchehma),
     defaultValues: {
-      supplier: "",
+      supplier: supplierId,
       address: "",
     },
   });
@@ -92,6 +94,7 @@ const CreatePurchaseOrderForm = ({
                 <Select
                   defaultValue={field.value}
                   onValueChange={field.onChange}
+                  disabled
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Please select a supplier" />

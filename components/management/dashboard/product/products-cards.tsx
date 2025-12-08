@@ -40,12 +40,14 @@ const ProductsCards = ({
   products: Product[];
   suppliers: SuppliersDTO[];
 }) => {
-  const [visibleProducts, setVisibleProducts] = useState<Product[]>(products);
+  const [supplierProducts, setSupplierProducts] = useState<Product[]>([]);
+  const [visibleProducts, setVisibleProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [search, setSearch] = useState<string>("");
   const [category, setCategory] = useState<string>();
+  const [supplier, setSupplier] = useState<string>();
   useEffect(() => {
-    const filteredProducts = [...products].filter((product) => {
+    const filteredProducts = [...supplierProducts].filter((product) => {
       const matchesSearch =
         !search || new RegExp(search, "i").test(product.name);
       const matchesCategory =
@@ -54,6 +56,14 @@ const ProductsCards = ({
     });
     setVisibleProducts(filteredProducts);
   }, [search, category]);
+  useEffect(() => {
+    const filteredProducts = [...products].filter(
+      (product) => product.supplierId === supplier
+    );
+    setSupplierProducts(filteredProducts);
+    setVisibleProducts(filteredProducts);
+    setCart([]);
+  }, [supplier]);
   const handleAddToCart = (e: React.MouseEvent<HTMLDivElement>) => {
     const button =
       ((e.target as HTMLElement).closest(
@@ -108,6 +118,7 @@ const ProductsCards = ({
               {cart.length > 0 ? (
                 <CreatePurchaseOrderForm
                   suppliers={suppliers}
+                  supplierId={supplier!}
                   cart={cart}
                   resetCart={setCart}
                 />
@@ -126,7 +137,12 @@ const ProductsCards = ({
             <Filter size={20} className="text-muted-foreground" />
             Filter
           </p>
-          <Select>
+          <Select
+            value={supplier}
+            onValueChange={(value) => {
+              setSupplier(value);
+            }}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Supplier" />
             </SelectTrigger>
@@ -140,7 +156,8 @@ const ProductsCards = ({
           </Select>
           <Select
             value={category}
-            onValueChange={(value) => setCategory(value as Category)}
+            onValueChange={(value) => setCategory(value)}
+            disabled={!supplier}
           >
             <SelectTrigger>
               <SelectValue placeholder="Category" />
@@ -169,80 +186,95 @@ const ProductsCards = ({
         </div>
       </div>
       <div className="flex flex-wrap gap-5" onClick={handleAddToCart}>
-        {visibleProducts.map((product) => (
-          <Card
-            data-card={true}
-            key={product.id}
-            className="basis-[calc(25%-1rem)] pt-0 overflow-hidden border rounded-md flex flex-col"
-          >
-            <div
-              className={cn(
-                "h-[150px] w-full flex items-center justify-center bg-background",
-                {
-                  "bg-gray-50": product.photoURL,
-                }
-              )}
-            >
-              {product.photoURL ? (
-                <img src={product.photoURL} className="object-contain h-full" />
-              ) : (
-                <Package size={100} className="text-gray-300" />
-              )}
-            </div>
-            <CardContent className="flex-1 flex flex-col gap-2">
-              <p className="text-sm flex-1">{product.name}</p>
-              <p className="text-sm text-muted-foreground flex-1">
-                {product.description}
-              </p>
-              <div className="flex items-center gap-2 flex-1">
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Size" data-size />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(product.category !== "FOOTWEAR"
-                      ? Object.values(ShirtSize)
-                      : shoeSizesUS
-                    ).map((size) => (
-                      <SelectItem key={size} value={size.toString()}>
-                        {size}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Color" data-color />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(Color).map((color) => (
-                      <SelectItem key={color} value={color}>
-                        {screamingSnakeToTitle(color)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <p className="font-semibold text-xl">
-                {new Intl.NumberFormat("en-PH", {
-                  style: "currency",
-                  currency: "PHP",
-                }).format(product.cost)}
-              </p>
-            </CardContent>
-            <div className="flex items-center justify-end gap-2 px-5">
-              <Input
-                defaultValue="0"
-                type="number"
-                className="w-[70px] focus-visible:ring-0 focus:ring-0 outline-0"
-                data-qty
-              />
-              <Button size="icon-sm" data-id={product.id}>
-                <ShoppingCart />
-              </Button>
-            </div>
-          </Card>
-        ))}
+        {supplier ? (
+          visibleProducts.length > 0 ? (
+            visibleProducts.map((product) => (
+              <Card
+                data-card={true}
+                key={product.id}
+                className="basis-[calc(25%-1rem)] pt-0 overflow-hidden border rounded-md flex flex-col"
+              >
+                <div
+                  className={cn(
+                    "h-[150px] w-full flex items-center justify-center bg-background",
+                    {
+                      "bg-gray-50": product.photoURL,
+                    }
+                  )}
+                >
+                  {product.photoURL ? (
+                    <img
+                      src={product.photoURL}
+                      className="object-contain h-full"
+                    />
+                  ) : (
+                    <Package size={100} className="text-gray-300" />
+                  )}
+                </div>
+                <CardContent className="flex-1 flex flex-col gap-2">
+                  <p className="text-sm flex-1">{product.name}</p>
+                  <p className="text-sm text-muted-foreground flex-1">
+                    {product.description}
+                  </p>
+                  <div className="flex items-center gap-2 flex-1">
+                    <Select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Size" data-size />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(product.category !== "FOOTWEAR"
+                          ? Object.values(ShirtSize)
+                          : shoeSizesUS
+                        ).map((size) => (
+                          <SelectItem key={size} value={size.toString()}>
+                            {size}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Color" data-color />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.values(Color).map((color) => (
+                          <SelectItem key={color} value={color}>
+                            {screamingSnakeToTitle(color)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <p className="font-semibold text-xl">
+                    {new Intl.NumberFormat("en-PH", {
+                      style: "currency",
+                      currency: "PHP",
+                    }).format(product.cost)}
+                  </p>
+                </CardContent>
+                <div className="flex items-center justify-end gap-2 px-5">
+                  <Input
+                    defaultValue="0"
+                    type="number"
+                    className="w-[70px] focus-visible:ring-0 focus:ring-0 outline-0"
+                    data-qty
+                  />
+                  <Button size="icon-sm" data-id={product.id}>
+                    <ShoppingCart />
+                  </Button>
+                </div>
+              </Card>
+            ))
+          ) : (
+            <p className="text-center p-20 w-full text-muted-foreground">
+              No results.
+            </p>
+          )
+        ) : (
+          <p className="text-center p-20 w-full text-muted-foreground">
+            Please select a supplier.
+          </p>
+        )}
       </div>
     </div>
   );

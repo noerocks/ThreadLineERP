@@ -227,7 +227,7 @@ export function DataTable<TData, TValue>({
             </TabsList>
             <TabsContent value="overview">
               {product?.photoURL && (
-                <div className="h-60 w-full bg-gray-200">
+                <div className="h-60 w-full bg-gray-100">
                   <img
                     src={product?.photoURL}
                     className="object-contain object-center h-full w-full"

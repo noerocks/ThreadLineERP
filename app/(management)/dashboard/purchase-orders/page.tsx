@@ -2,7 +2,6 @@ import ProductsCards from "@/components/management/dashboard/product/products-ca
 import { columns } from "@/components/management/dashboard/purchase-order/columns";
 import { DataTable } from "@/components/management/dashboard/purchase-order/data-table";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { verifySession } from "@/lib/actions/session";
 import { getProducts } from "@/lib/DAL/product";
