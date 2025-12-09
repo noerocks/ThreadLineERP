@@ -60,6 +60,7 @@ export const getProducts = unstable_cache(
         variants: {
           include: {
             purchaseOrderItems: true,
+            product: true,
           },
         },
       },

@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import ShopHeader from "@/components/shop/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,7 @@ export default function CustomerLayout({
               </div>
             </div>
           </SessionProvider>
+          <Toaster position="top-center" />
         </ThemeProvider>
       </body>
     </html>

@@ -9,6 +9,8 @@ export default async function middleware(req: NextRequest) {
     "/",
     "/login",
     "/register",
+    "/cart",
+    "/settings",
     ...Object.values(Category).map((cat) => `/category/${cat}`),
   ];
   const session = (await cookies()).get("session")?.value;

@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Power, ShoppingCart } from "lucide-react";
+import { LogOut, Power, Settings, ShoppingCart } from "lucide-react";
 import Signin from "../google-signin";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../theme-toggle";
@@ -41,9 +41,11 @@ const ShopHeader = () => {
       </div>
       <div className="flex items-center gap-5">
         <ModeToggle />
-        <Button variant="ghost">
-          <ShoppingCart />
-        </Button>
+        <Link href="/cart">
+          <Button variant="ghost">
+            <ShoppingCart />
+          </Button>
+        </Link>
         {session && user ? (
           <>
             <p className="text-muted-foreground">{user.email}</p>
@@ -57,6 +59,12 @@ const ShopHeader = () => {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent side="bottom" align="end" sideOffset={5}>
+                <Link href="/settings">
+                  <DropdownMenuItem className="flex items-center">
+                    <Settings />
+                    Settings
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem
                   className="flex items-center"
                   variant="destructive"

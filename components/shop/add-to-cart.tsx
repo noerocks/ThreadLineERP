@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { RotateCcw, ShoppingCart } from "lucide-react";
 import { cn, screamingSnakeToTitle } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const AddToCart = ({ product }: { product: ProductDTO }) => {
   const inStockVariants = product.variants.filter(
@@ -55,6 +56,21 @@ const AddToCart = ({ product }: { product: ProductDTO }) => {
       setSelectedVariant(undefined);
     }
   }, [selectedSize, selectedColor]);
+  const addToCart = () => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const newCart = [
+      ...cart,
+      { qty: quantity, variantId: selectedVariant?.id },
+    ];
+    localStorage.setItem("cart", JSON.stringify(newCart));
+    toast.success("Items added to cart");
+    reset();
+  };
+  const reset = () => {
+    setSelectedSize(undefined);
+    setSelectedColor(undefined);
+    setQuantity(1);
+  };
   return (
     <div className="grid grid-cols-2 h-[600px] my-10 mx-50 gap-20">
       <div className="h-full w-full flex items-center justify-center overflow-hidden bg-gray-50 relative">
@@ -95,9 +111,7 @@ const AddToCart = ({ product }: { product: ProductDTO }) => {
               size={15}
               className="text-muted-foreground"
               onClick={() => {
-                setSelectedSize(undefined);
-                setSelectedColor(undefined);
-                setQuantity(1);
+                reset();
               }}
             />
           )}
@@ -157,7 +171,7 @@ const AddToCart = ({ product }: { product: ProductDTO }) => {
             <p className="text-muted-foreground">{`Stock: ${selectedVariant.stock}`}</p>
           </div>
         )}
-        <Button disabled={!selectedVariant}>
+        <Button disabled={!selectedVariant} onClick={addToCart}>
           <ShoppingCart />
           Add to Cart
         </Button>

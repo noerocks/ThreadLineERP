@@ -211,11 +211,12 @@ model PurchaseOrderItem {
 }
 
 model Sale {
-  id         String     @id @default(cuid())
-  createdAt  DateTime   @default(now())
-  customer   User       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  id         String              @id @default(cuid())
+  createdAt  DateTime            @default(now())
+  customer   User                @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId String
   paidAt     DateTime?
+  status     PurchaseOrderStatus
   items      SaleItem[]
   CashFlow   CashFlow[]
 }
