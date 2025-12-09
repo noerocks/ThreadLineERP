@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { ModeToggle } from "../theme-toggle";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getInitialsFromName, screamingSnakeToTitle } from "@/lib/utils";
+import { cn, getInitialsFromName, screamingSnakeToTitle } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,21 +15,27 @@ import {
 } from "../ui/dropdown-menu";
 import { Category } from "@prisma/client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const ShopHeader = () => {
   const { data: session } = useSession();
   const user = session?.user;
-  const categories = [
-    "Shop All",
-    ...Object.values(Category).map((cat) => screamingSnakeToTitle(cat)),
-  ];
+  const pathName = usePathname();
+  const categories = ["SHOP_ALL", ...Object.values(Category)];
   return (
     <header className="flex items-center justify-between px-20 py-5 border-b">
       <p className="text-4xl">ThreadLine.</p>
       <div className="flex items-center gap-10">
         {categories.map((cat) => (
-          <Link href="/" key={cat} className="text-muted-foreground">
-            {cat}
+          <Link
+            href={cat === "SHOP_ALL" ? "/" : `/category/${cat}`}
+            key={cat}
+            className={cn("text-muted-foreground hover:text-foreground", {
+              "text-foreground underline underline-offset-8":
+                pathName.split("/")[2] === cat,
+            })}
+          >
+            {screamingSnakeToTitle(cat)}
           </Link>
         ))}
       </div>

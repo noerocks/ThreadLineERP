@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "./lib/actions/session";
 import { cookies } from "next/headers";
+import { Category } from "@prisma/client";
 
 export default async function middleware(req: NextRequest) {
   const pathName = req.nextUrl.pathname;
-  const publicRoutes = ["/", "/login", "/register"];
+  const publicRoutes = [
+    "/",
+    "/login",
+    "/register",
+    ...Object.values(Category).map((cat) => `/category/${cat}`),
+  ];
   const session = (await cookies()).get("session")?.value;
   const isPublicRoute = publicRoutes.includes(pathName);
   const payload = await decrypt(session);

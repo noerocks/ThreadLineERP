@@ -1,7 +1,7 @@
 import z from "zod";
 import { AddProductFormSchema } from "../zod-definitions";
 import { prisma } from "../prisma";
-import { Product, ProductStatus } from "@prisma/client";
+import { Category, Product, ProductStatus } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { ProductDTO } from "../DTO/product";
 
@@ -55,6 +55,28 @@ export async function sloppyUpdateProductById(data: Partial<Product>) {
 export const getProducts = unstable_cache(
   async (): Promise<ProductDTO[]> => {
     const products = await prisma.product.findMany({
+      include: {
+        variants: {
+          include: {
+            purchaseOrderItems: true,
+          },
+        },
+      },
+    });
+    return products;
+  },
+  ["getProducts"],
+  {
+    tags: ["products"],
+  }
+);
+
+export const getProductsByCategory = unstable_cache(
+  async (category: Category): Promise<ProductDTO[]> => {
+    const products = await prisma.product.findMany({
+      where: {
+        category,
+      },
       include: {
         variants: {
           include: {

@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { SessionProvider } from "next-auth/react";
 import ShopHeader from "@/components/shop/header";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,8 +38,12 @@ export default function CustomerLayout({
           disableTransitionOnChange
         >
           <SessionProvider>
-            <ShopHeader />
-            <main>{children}</main>
+            <div className="h-screen flex flex-col">
+              <ShopHeader />
+              <div className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">{children}</ScrollArea>
+              </div>
+            </div>
           </SessionProvider>
         </ThemeProvider>
       </body>
