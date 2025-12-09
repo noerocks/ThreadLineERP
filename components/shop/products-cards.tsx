@@ -78,11 +78,13 @@ const ProductsCards = ({
                   src={product.photoURL!}
                   className="object-contain w-full h-full"
                 />
-                <div className="absolute w-full h-full top-0 bg-black/50 flex items-center justify-center">
-                  <p className="bg-background/80 px-5 py-2 text-sm">
-                    Out of Stock
-                  </p>
-                </div>
+                {!inStock && (
+                  <div className="absolute w-full h-full top-0 bg-black/50 flex items-center justify-center">
+                    <p className="bg-background/80 px-5 py-2 text-sm">
+                      Out of Stock
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col h-20 my-2">
                 <Link
