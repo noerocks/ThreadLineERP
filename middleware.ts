@@ -12,7 +12,8 @@ export default async function middleware(req: NextRequest) {
     ...Object.values(Category).map((cat) => `/category/${cat}`),
   ];
   const session = (await cookies()).get("session")?.value;
-  const isPublicRoute = publicRoutes.includes(pathName);
+  const isPublicRoute =
+    publicRoutes.includes(pathName) || pathName.startsWith("/product");
   const payload = await decrypt(session);
 
   if (!session && !isPublicRoute) {

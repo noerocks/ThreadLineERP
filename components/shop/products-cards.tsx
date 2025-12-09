@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { SuppliersDTO } from "@/lib/DTO/suppliers";
+import Link from "next/link";
 
 const ProductsCards = ({
   products,
@@ -68,28 +69,41 @@ const ProductsCards = ({
         </Select>
       </div>
       <div className="grid grid-cols-4 gap-10">
-        {visibleProducts.map((product) => (
-          <div key={product.id}>
-            <div className="h-[300px] bg-gray-50">
-              <img
-                src={product.photoURL!}
-                className="object-contain w-full h-full"
-              />
+        {visibleProducts.map((product) => {
+          const inStock = product.variants.some((variant) => variant.stock > 0);
+          return (
+            <div key={product.id}>
+              <div className="h-[300px] bg-gray-50 relative">
+                <img
+                  src={product.photoURL!}
+                  className="object-contain w-full h-full"
+                />
+                <div className="absolute w-full h-full top-0 bg-black/50 flex items-center justify-center">
+                  <p className="bg-background/80 px-5 py-2 text-sm">
+                    Out of Stock
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col h-20 my-2">
+                <Link
+                  href={`/product/${product.id}`}
+                  className="text-sm flex-1 hover:underline underline-offset-4"
+                >
+                  {product.name}
+                </Link>
+                <p className="text-sm text-muted-foreground flex-1">
+                  {product.description}
+                </p>
+                <p className="flex-1 text-xl">
+                  {new Intl.NumberFormat("en-PH", {
+                    style: "currency",
+                    currency: "PHP",
+                  }).format(product.price)}
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col h-20 my-2">
-              <p className="text-sm flex-1">{product.name}</p>
-              <p className="text-sm text-muted-foreground flex-1">
-                {product.description}
-              </p>
-              <p className="flex-1 text-xl">
-                {new Intl.NumberFormat("en-PH", {
-                  style: "currency",
-                  currency: "PHP",
-                }).format(product.cost)}
-              </p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

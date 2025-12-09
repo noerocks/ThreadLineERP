@@ -72,6 +72,16 @@ enum Color {
   BROWN
 }
 
+enum CashFlowType {
+  INFLOW
+  OUTFLOW
+}
+
+enum CashFlowSource {
+  PURCHASE
+  SALE
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -115,6 +125,7 @@ model User {
   birthday       DateTime?
   accounts       Account[]
   sessions       Session[]
+  Sale           Sale[]
 
   @@map("users")
 }
@@ -131,14 +142,13 @@ model VerificationToken {
 model Product {
   id          String           @id @default(cuid())
   status      ProductStatus
-  supplier    Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  supplierId String
+  supplier    Supplier         @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  supplierId  String
   name        String
   description String?
   photoURL    String?
   cost        Float            @default(0)
   price       Float            @default(0)
-  vatAmount   Float            @default(0)
   category    Category
   gender      Gender
   createdAt   DateTime         @default(now())
@@ -147,7 +157,7 @@ model Product {
 }
 
 model ProductVariant {
-  id                 String              @id @default(cuid())   
+  id                 String              @id @default(cuid())
   sku                String              @unique
   product            Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId          String
@@ -158,6 +168,7 @@ model ProductVariant {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   purchaseOrderItems PurchaseOrderItem[]
+  saleItems          SaleItem[]
 }
 
 model Supplier {
@@ -182,18 +193,54 @@ model PurchaseOrder {
   items      PurchaseOrderItem[]
   createdAt  DateTime            @default(now())
   updatedAt  DateTime            @updatedAt
+  CashFlow   CashFlow[]
 }
 
 model PurchaseOrderItem {
-  id               String                  @id @default(cuid())
-  order            PurchaseOrder           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id               String         @id @default(cuid())
+  order            PurchaseOrder  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId          String
-  variant          ProductVariant          @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  variant          ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
   productVariantId String
   quantity         Int
   unitPrice        Float
   vatAmount        Float
   lineTotal        Float
-  createdAt        DateTime                @default(now())
-  updatedAt        DateTime                @updatedAt
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Sale {
+  id         String     @id @default(cuid())
+  createdAt  DateTime   @default(now())
+  customer   User       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId String
+  paidAt     DateTime?
+  items      SaleItem[]
+  CashFlow   CashFlow[]
+}
+
+model SaleItem {
+  id               String         @id @default(cuid())
+  sale             Sale           @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  saleId           String
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  productVariantId String
+  quantity         Int
+  unitPrice        Float
+  vatAmount        Float
+  lineTotal        Float
+}
+
+model CashFlow {
+  id        String         @id @default(cuid())
+  type      CashFlowType
+  source    CashFlowSource
+  po        PurchaseOrder? @relation(fields: [poId], references: [id], onDelete: Cascade)
+  poId      String?
+  sale      Sale?          @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  saleId    String?
+  amount    Float
+  vatAmount Float?
+  createdAt DateTime       @default(now())
 }

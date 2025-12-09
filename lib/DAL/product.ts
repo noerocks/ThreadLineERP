@@ -24,7 +24,7 @@ export async function createNewProduct(
 }
 
 export async function updateProductById(
-  data: z.infer<typeof AddProductFormSchema> & { id: string }
+  data: z.infer<typeof AddProductFormSchema> & { id: string; price: number }
 ) {
   const product = await prisma.product.update({
     where: {
@@ -37,6 +37,7 @@ export async function updateProductById(
       status: ProductStatus.OUT_OF_STOCK,
       description: data.description,
       cost: Number(data.cost),
+      price: data.price,
     },
   });
   return product;
@@ -66,6 +67,28 @@ export const getProducts = unstable_cache(
     return products;
   },
   ["getProducts"],
+  {
+    tags: ["products"],
+  }
+);
+
+export const getProductById = unstable_cache(
+  async (id: string): Promise<ProductDTO | null> => {
+    const product = await prisma.product.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        variants: {
+          include: {
+            purchaseOrderItems: true,
+          },
+        },
+      },
+    });
+    return product;
+  },
+  ["getProduct"],
   {
     tags: ["products"],
   }

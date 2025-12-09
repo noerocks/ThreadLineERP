@@ -36,7 +36,8 @@ export async function updateProduct(
   const session = await verifySession();
   if (!session) return { failure: { error: "Unauthenticated" } };
   try {
-    const product = await updateProductById(data);
+    const price = Number(data.cost) * (1 + 0.4);
+    const product = await updateProductById({ ...data, price });
     revalidateTag("products");
     return { success: { message: "Product updated successfully" } };
   } catch (error) {
