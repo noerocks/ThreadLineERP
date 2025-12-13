@@ -16,3 +16,13 @@ export async function findUserByEmail(email: string) {
   });
   return user;
 }
+
+export async function updateUser(data: Partial<User>) {
+  const user = await prisma.user.update({
+    where: {
+      id: data.id,
+    },
+    data,
+  });
+  return user;
+}

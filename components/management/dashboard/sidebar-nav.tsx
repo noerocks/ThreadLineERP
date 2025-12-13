@@ -11,7 +11,7 @@ import {
 import { SessionPayload } from "@/lib/zod-definitions";
 import { UserRole } from "@prisma/client";
 import { link } from "fs";
-import { FileText, Package, Truck } from "lucide-react";
+import { FileText, Package, ShoppingBag, Truck } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import z from "zod";
@@ -43,6 +43,17 @@ const SidebarNavigation = ({
           link: "/dashboard/purchase-orders",
           icon: <FileText />,
           authorizedUsers: [UserRole.ADMIN, UserRole.SUPPLIER],
+        },
+      ],
+    },
+    {
+      label: "Sales and Finance",
+      items: [
+        {
+          label: "Online Orders",
+          link: "/dashboard/orders",
+          icon: <ShoppingBag />,
+          authorizedUsers: [UserRole.ADMIN],
         },
       ],
     },

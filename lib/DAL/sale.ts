@@ -1,5 +1,6 @@
 import { PurchaseOrderStatus } from "@prisma/client";
 import { prisma } from "../prisma";
+import { unstable_cache } from "next/cache";
 
 export async function createSale(customerId: string) {
   const sale = await prisma.sale.create({
@@ -10,3 +11,19 @@ export async function createSale(customerId: string) {
   });
   return sale;
 }
+
+export const getAllSales = unstable_cache(
+  async () => {
+    const sale = await prisma.sale.findMany({
+      include: {
+        customer: true,
+        items: true,
+      },
+    });
+    return sale;
+  },
+  ["getAllSales"],
+  {
+    tags: ["sales"],
+  }
+);

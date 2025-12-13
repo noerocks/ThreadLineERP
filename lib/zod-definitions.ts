@@ -59,3 +59,9 @@ export const CreatePurchaseOrderSchehma = z.object({
   supplier: z.string().min(1, "This field is required").trim(),
   address: z.string().min(1, "This field is required").trim(),
 });
+
+export const CustomerFormSchema = z.object({
+  name: z.string().min(1, "This field is required").trim(),
+  address: z.string().min(1, "This field is required").trim(),
+  contactNumber: z.string().min(1, "This field is required").trim(),
+});

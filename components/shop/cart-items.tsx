@@ -5,10 +5,10 @@ import { useEffect, useState, useTransition } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Loader2, ShoppingCart, Trash } from "lucide-react";
 import { Button } from "../ui/button";
-import { User } from "next-auth";
 import { toast } from "sonner";
 import { createSale } from "@/lib/actions/sale";
 import Link from "next/link";
+import { User } from "@prisma/client";
 
 const CartItems = ({
   variants,
@@ -56,6 +56,10 @@ const CartItems = ({
     startTransition(async () => {
       if (!user) {
         toast.error("Please login to your Google account first to continue.");
+        return;
+      }
+      if (!user.address || !user.contactNumber) {
+        toast.error("Please complete your shipping details first");
         return;
       }
       const result = await createSale(user?.id!, cart);

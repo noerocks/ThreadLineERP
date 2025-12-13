@@ -39,7 +39,7 @@ export async function createSale(
     const manySaleItems = await createManySaleItems(saleItems);
     if (!manySaleItems)
       return { failure: { error: "Error in creating sale items" } };
-    revalidateTag("saleItems");
+    revalidateTag("sales");
     return { success: { message: "Sale items created successfully" } };
   } catch (error) {
     const e = error as Error;
