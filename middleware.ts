@@ -15,7 +15,9 @@ export default async function middleware(req: NextRequest) {
   ];
   const session = (await cookies()).get("session")?.value;
   const isPublicRoute =
-    publicRoutes.includes(pathName) || pathName.startsWith("/product");
+    publicRoutes.includes(pathName) ||
+    pathName.startsWith("/product") ||
+    pathName.startsWith("/orders");
   const payload = await decrypt(session);
 
   if (!session && !isPublicRoute) {

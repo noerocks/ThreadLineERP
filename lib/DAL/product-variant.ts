@@ -32,6 +32,9 @@ export async function getProductVariantById(id: string) {
     where: {
       id,
     },
+    include: {
+      product: true,
+    },
   });
   return productVariant;
 }
