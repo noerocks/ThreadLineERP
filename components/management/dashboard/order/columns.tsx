@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CheckCircle2, Timer, Truck } from "lucide-react";
 import { screamingSnakeToTitle } from "@/lib/utils";
 import { SaleDTO } from "@/lib/DTO/sale";
+import ActionsCell from "./actions-cell";
 
 export const columns: ColumnDef<SaleDTO>[] = [
   {
@@ -34,6 +35,11 @@ export const columns: ColumnDef<SaleDTO>[] = [
     id: "customer.name",
     accessorKey: "customer.name",
     header: "Customer",
+  },
+  {
+    id: "customer.address",
+    accessorKey: "customer.address",
+    header: "Address",
   },
   {
     accessorKey: "createdAt",
@@ -98,6 +104,14 @@ export const columns: ColumnDef<SaleDTO>[] = [
           )}
         </div>
       );
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const sale = row.original;
+      return <ActionsCell sale={sale} />;
     },
   },
 ];

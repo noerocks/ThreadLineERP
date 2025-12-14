@@ -33,6 +33,9 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { deliverItems } from "@/lib/actions/sale";
+import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -69,6 +72,34 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
+  const pathName = usePathname();
+  const router = useRouter();
+  const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    const menuItem =
+      ((e.target as HTMLElement).closest("[data-id]") as HTMLDivElement) ||
+      null;
+    if (!menuItem) return;
+    const saleId = menuItem.dataset.id;
+    const action = menuItem.dataset.action;
+    if (!saleId || !action) return;
+    switch (action) {
+      case "view": {
+        router.replace(`${pathName}/${saleId}`);
+        break;
+      }
+      case "deliver": {
+        const result = await deliverItems(saleId);
+        if (result.success) {
+          toast.success(result.success.message);
+          return;
+        }
+        if (result.failure) {
+          toast.error(result.failure.error);
+          return;
+        }
+      }
+    }
+  };
   return (
     <div>
       <div className="flex items-center py-4">
@@ -129,7 +160,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody onClick={handleClick}>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

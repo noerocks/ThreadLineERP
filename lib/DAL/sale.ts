@@ -1,4 +1,4 @@
-import { PurchaseOrderStatus } from "@prisma/client";
+import { PurchaseOrderStatus, Sale } from "@prisma/client";
 import { prisma } from "../prisma";
 import { unstable_cache } from "next/cache";
 
@@ -17,7 +17,16 @@ export const getAllSales = unstable_cache(
     const sale = await prisma.sale.findMany({
       include: {
         customer: true,
-        items: true,
+        items: {
+          include: {
+            productVariant: {
+              include: {
+                product: true,
+                purchaseOrderItems: true,
+              },
+            },
+          },
+        },
       },
     });
     return sale;
@@ -27,3 +36,38 @@ export const getAllSales = unstable_cache(
     tags: ["sales"],
   }
 );
+
+export async function getSaleById(id: string) {
+  const sale = await prisma.sale.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      customer: true,
+      items: {
+        include: {
+          productVariant: {
+            include: {
+              product: true,
+              purchaseOrderItems: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return sale;
+}
+
+export async function updateSaleById(data: Partial<Sale>) {
+  const sale = await prisma.sale.update({
+    where: {
+      id: data.id,
+    },
+    data,
+    include: {
+      items: true,
+    },
+  });
+  return sale;
+}
