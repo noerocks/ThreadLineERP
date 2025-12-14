@@ -78,3 +78,35 @@ export async function deliverItems(saleId: string) {
     return { failure: { error: e.message } };
   }
 }
+
+export async function orderReceived(saleId: string) {
+  try {
+    const sale = await updateSaleById({
+      id: saleId,
+      status: PurchaseOrderStatus.ARRIVED,
+    });
+    if (!sale) return { failure: { error: "Error in updating sale" } };
+    revalidateTag("sales");
+    return { success: { message: "Orders received" } };
+  } catch (error) {
+    const e = error as Error;
+    console.log(e.message);
+    return { failure: { error: e.message } };
+  }
+}
+
+export async function paymentReceived(saleId: string) {
+  try {
+    const sale = await updateSaleById({
+      id: saleId,
+      paidAt: new Date(),
+    });
+    if (!sale) return { failure: { error: "Error in updating sale" } };
+    revalidateTag("sales");
+    return { success: { message: "Payment Received" } };
+  } catch (error) {
+    const e = error as Error;
+    console.log(e.message);
+    return { failure: { error: e.message } };
+  }
+}

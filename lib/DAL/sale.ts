@@ -37,6 +37,34 @@ export const getAllSales = unstable_cache(
   }
 );
 
+export const getAllSalesByCustomerId = unstable_cache(
+  async (customerId: string) => {
+    const sale = await prisma.sale.findMany({
+      where: {
+        customerId,
+      },
+      include: {
+        customer: true,
+        items: {
+          include: {
+            productVariant: {
+              include: {
+                product: true,
+                purchaseOrderItems: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return sale;
+  },
+  ["getAllSales"],
+  {
+    tags: ["sales"],
+  }
+);
+
 export async function getSaleById(id: string) {
   const sale = await prisma.sale.findUnique({
     where: {

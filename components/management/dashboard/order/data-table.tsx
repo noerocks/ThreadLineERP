@@ -33,7 +33,11 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deliverItems } from "@/lib/actions/sale";
+import {
+  deliverItems,
+  orderReceived,
+  paymentReceived,
+} from "@/lib/actions/sale";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -89,6 +93,28 @@ export function DataTable<TData, TValue>({
       }
       case "deliver": {
         const result = await deliverItems(saleId);
+        if (result.success) {
+          toast.success(result.success.message);
+          return;
+        }
+        if (result.failure) {
+          toast.error(result.failure.error);
+          return;
+        }
+      }
+      case "received": {
+        const result = await orderReceived(saleId);
+        if (result.success) {
+          toast.success(result.success.message);
+          return;
+        }
+        if (result.failure) {
+          toast.error(result.failure.error);
+          return;
+        }
+      }
+      case "paid": {
+        const result = await paymentReceived(saleId);
         if (result.success) {
           toast.success(result.success.message);
           return;
