@@ -17,6 +17,7 @@ import {
   getProductVariantBySKUandProductId,
   updateProductVariantById,
 } from "../DAL/product-variant";
+import { createOutFlow } from "../DAL/cashflow";
 
 export async function createPurchaseOrder(
   supplierId: string,
@@ -146,6 +147,20 @@ export async function deliverItems(purchaseOrderId: string) {
       id: purchaseOrderId,
       status: "IN_TRANSIT",
     });
+    const outflowAmount = purchaseOrder.items.reduce(
+      (sum, item) => (sum += item.lineTotal),
+      0
+    );
+    const outflowVatAmount = purchaseOrder.items.reduce(
+      (sum, item) => (sum += item.unitPrice * 0.12 * item.quantity),
+      0
+    );
+    const outflow = await createOutFlow({
+      poId: purchaseOrder.id,
+      amount: outflowAmount,
+      vatAmount: outflowVatAmount,
+    });
+    revalidateTag("cashflow");
     revalidateTag("purchaseOrders");
     revalidateTag("products");
     return {

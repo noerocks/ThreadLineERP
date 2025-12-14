@@ -13,6 +13,7 @@ import { createManySaleItems } from "../DAL/sale-item";
 import { revalidateTag } from "next/cache";
 import { verifySession } from "./session";
 import { PurchaseOrderStatus } from "@prisma/client";
+import { createInflow } from "../DAL/cashflow";
 
 export async function createSale(
   userId: string,
@@ -102,7 +103,21 @@ export async function paymentReceived(saleId: string) {
       paidAt: new Date(),
     });
     if (!sale) return { failure: { error: "Error in updating sale" } };
+    const inflowAmount = sale.items.reduce(
+      (sum, item) => (sum += item.lineTotal),
+      0
+    );
+    const inflowVatAmount = sale.items.reduce(
+      (sum, item) => (sum += item.unitPrice * 0.12 * item.quantity),
+      0
+    );
+    const inflow = await createInflow({
+      saleId: sale.id,
+      amount: inflowAmount,
+      vatAmount: inflowVatAmount,
+    });
     revalidateTag("sales");
+    revalidateTag("cashflow");
     return { success: { message: "Payment Received" } };
   } catch (error) {
     const e = error as Error;
